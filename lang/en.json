@@ -1,0 +1,22 @@
+{
+    "Dashboard": "Dashboard",
+    "Projects": "Projects",
+    "Sites": "Sites",
+    "Contractors": "Contractors",
+    "Suppliers": "Suppliers",
+    "Items": "Items",
+    "Work Orders": "Work Orders",
+    "Material Receipt Notes": "Material Receipt Notes",
+    "Gate Passes": "Gate Passes",
+    "Material Disposal Requests": "Material Disposal Requests",
+    "Material Return Requests": "Material Return Requests",
+    "Work Order Transfers": "Work Order Transfers",
+    "Stock Ledgers": "Stock Ledgers",
+    "Work Order Stocks": "Work Order Stocks",
+    "Create": "Create",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "View": "View",
+    "Save": "Save",
+    "Cancel": "Cancel"
+}

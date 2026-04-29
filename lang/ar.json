@@ -1,0 +1,22 @@
+{
+    "Dashboard": "لوحة التحكم",
+    "Projects": "المشاريع",
+    "Sites": "المواقع",
+    "Contractors": "المقاولون",
+    "Suppliers": "الموردون",
+    "Items": "الأصناف",
+    "Work Orders": "أوامر العمل",
+    "Material Receipt Notes": "إشعارات استلام المواد",
+    "Gate Passes": "تصاريح البوابة",
+    "Material Disposal Requests": "طلبات إتلاف المواد",
+    "Material Return Requests": "طلبات إرجاع المواد",
+    "Work Order Transfers": "تحويلات أوامر العمل",
+    "Stock Ledgers": "سجل المخزون",
+    "Work Order Stocks": "أرصدة أوامر العمل",
+    "Create": "إنشاء",
+    "Edit": "تعديل",
+    "Delete": "حذف",
+    "View": "عرض",
+    "Save": "حفظ",
+    "Cancel": "إلغاء"
+}
