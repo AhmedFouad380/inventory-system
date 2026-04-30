@@ -19,22 +19,26 @@ return new class extends Migration
             }
         }
 
-        // Update work_order_stocks
-        Schema::table('work_order_stocks', function (Blueprint $table) {
-            // Drop foreign keys first to allow index changes
-            try {
+        // Update work_order_stocks - Separated to handle potential errors
+        try {
+            Schema::table('work_order_stocks', function (Blueprint $table) {
                 $table->dropForeign(['work_order_id']);
-            } catch (\Exception $e) {}
+            });
+        } catch (\Exception $e) {}
 
-            try {
+        try {
+            Schema::table('work_order_stocks', function (Blueprint $table) {
                 $table->dropForeign(['item_id']);
-            } catch (\Exception $e) {}
-            
-            // Drop old unique index if it exists
-            try {
-                $table->dropUnique(['work_order_id', 'item_id']);
-            } catch (\Exception $e) {}
+            });
+        } catch (\Exception $e) {}
 
+        try {
+            Schema::table('work_order_stocks', function (Blueprint $table) {
+                $table->dropUnique(['work_order_id', 'item_id']);
+            });
+        } catch (\Exception $e) {}
+
+        Schema::table('work_order_stocks', function (Blueprint $table) {
             if (!Schema::hasColumn('work_order_stocks', 'warehouse_id')) {
                 $table->foreignId('warehouse_id')->nullable()->after('item_id')->constrained('warehouses');
             }
