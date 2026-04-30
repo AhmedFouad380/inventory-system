@@ -22,11 +22,15 @@ return new class extends Migration
         // Update work_order_stocks
         Schema::table('work_order_stocks', function (Blueprint $table) {
             // Drop foreign keys first to allow index changes
-            $table->dropForeign(['work_order_id']);
-            $table->dropForeign(['item_id']);
+            try {
+                $table->dropForeign(['work_order_id']);
+            } catch (\Exception $e) {}
+
+            try {
+                $table->dropForeign(['item_id']);
+            } catch (\Exception $e) {}
             
             // Drop old unique index if it exists
-            // We use DB::statement because dropUnique might fail if index name is different or missing
             try {
                 $table->dropUnique(['work_order_id', 'item_id']);
             } catch (\Exception $e) {}
