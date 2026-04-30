@@ -25,8 +25,21 @@ return [
     'mrrs' => 'طلبات إرجاع المواد',
     'transfer' => 'تحويل',
     'transfers' => 'تحويلات أوامر العمل',
+    'transfer_details' => 'تفاصيل التحويل',
+    'stock_movement' => 'حركة المخزون',
+    'stock_distribution' => 'توزيع المخزون حسب المستودع',
+    'disposal_vs_returns' => 'الإتلاف مقابل المرتجعات',
     'ledger' => 'سجل المخزون',
     'stock' => 'رصيد المخزون',
+    'warehouse' => 'مستودع',
+    'warehouses' => 'المستودعات',
+
+    'nav' => [
+        'basic_data' => 'البيانات الأساسية',
+        'operations' => 'العمليات',
+        'inventory' => 'المخزون',
+        'inventory_reports' => 'المخازن والتقارير',
+    ],
 
     'fields' => [
         'name' => 'الاسم',
@@ -87,6 +100,11 @@ return [
         'transfer_date' => 'تاريخ التحويل',
         'from_work_order' => 'من أمر عمل',
         'to_work_order' => 'إلى أمر عمل',
+        'warehouse_name' => 'اسم المستودع',
+        'warehouse_code' => 'كود المستودع',
+        'from_date' => 'من تاريخ',
+        'to_date' => 'إلى تاريخ',
+        'available' => 'المتاح',
     ],
 
     'enums' => [
@@ -105,6 +123,12 @@ return [
             'expired' => 'منتهي الصلاحية',
             'excess' => 'زائد',
         ],
+        'disposal_method' => [
+            'destruction' => 'إعدام',
+            'scrap_sale' => 'بيع خردة',
+            'recycling' => 'إعادة تدوير',
+            'other' => 'أخرى',
+        ],
         'transaction_type' => [
             'mrn' => 'استلام مواد (MRN)',
             'gate_pass' => 'صرف مواد (GP)',
@@ -113,5 +137,8 @@ return [
             'transfer_in' => 'تحويل وارد',
             'transfer_out' => 'تحويل صادر',
         ],
-    ]
+    ],
+    'messages' => [
+        'insufficient_stock' => 'الكمية المطلوبة أكبر من الرصيد المتاح في أمر العمل المصدر (:balance)',
+    ],
 ];

@@ -25,8 +25,21 @@ return [
     'mrrs' => 'Material Return Requests',
     'transfer' => 'Transfer',
     'transfers' => 'Work Order Transfers',
+    'transfer_details' => 'Transfer Details',
+    'stock_movement' => 'Stock Movement',
+    'stock_distribution' => 'Stock Distribution by Warehouse',
+    'disposal_vs_returns' => 'Disposals vs Returns',
     'ledger' => 'Stock Ledger',
     'stock' => 'Stock Balance',
+    'warehouse' => 'Warehouse',
+    'warehouses' => 'Warehouses',
+
+    'nav' => [
+        'basic_data' => 'Basic Data',
+        'operations' => 'Operations',
+        'inventory' => 'Inventory',
+        'inventory_reports' => 'Inventory & Reports',
+    ],
 
     'fields' => [
         'name' => 'Name',
@@ -78,6 +91,11 @@ return [
         'transfer_date' => 'Transfer Date',
         'from_work_order' => 'From Work Order',
         'to_work_order' => 'To Work Order',
+        'warehouse_name' => 'Warehouse Name',
+        'warehouse_code' => 'Warehouse Code',
+        'from_date' => 'From Date',
+        'to_date' => 'To Date',
+        'available' => 'Available',
     ],
 
     'enums' => [
@@ -96,5 +114,22 @@ return [
             'expired' => 'Expired',
             'excess' => 'Excess',
         ],
-    ]
+        'disposal_method' => [
+            'destruction' => 'Destruction',
+            'scrap_sale' => 'Scrap Sale',
+            'recycling' => 'Recycling',
+            'other' => 'Other',
+        ],
+        'transaction_type' => [
+            'mrn' => 'Material Receipt (MRN)',
+            'gate_pass' => 'Gate Pass (GP)',
+            'mdr' => 'Material Disposal (MDR)',
+            'mrr' => 'Material Return (MRR)',
+            'transfer_in' => 'Transfer In',
+            'transfer_out' => 'Transfer Out',
+        ],
+    ],
+    'messages' => [
+        'insufficient_stock' => 'Requested quantity is greater than available balance in source work order (:balance)',
+    ],
 ];

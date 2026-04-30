@@ -31,7 +31,7 @@ class SupplierResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
-    protected static string | UnitEnum | null $navigationGroup = 'البيانات الأساسية';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.basic_data'); }
 
     protected static ?string $recordTitleAttribute = 'name';
 

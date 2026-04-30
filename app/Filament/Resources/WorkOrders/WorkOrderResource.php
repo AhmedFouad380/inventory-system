@@ -40,7 +40,7 @@ class WorkOrderResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
-    protected static string | UnitEnum | null $navigationGroup = 'العمليات';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
     protected static ?string $recordTitleAttribute = 'wo_number';
 

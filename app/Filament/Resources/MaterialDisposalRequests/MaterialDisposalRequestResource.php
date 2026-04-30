@@ -43,7 +43,7 @@ class MaterialDisposalRequestResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTrash;
 
-    protected static string | UnitEnum | null $navigationGroup = 'العمليات';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
     protected static ?string $recordTitleAttribute = 'mdr_number';
 
@@ -83,10 +83,10 @@ class MaterialDisposalRequestResource extends Resource
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('disposal_method')->label(__('inventory.fields.disposal_method'))
                             ->options([
-                                'إعدام' => 'إعدام',
-                                'بيع خردة' => 'بيع خردة',
-                                'إعادة تدوير' => 'إعادة تدوير',
-                                'أخرى' => 'أخرى',
+                                'destruction' => __('inventory.enums.disposal_method.destruction'),
+                                'scrap_sale' => __('inventory.enums.disposal_method.scrap_sale'),
+                                'recycling' => __('inventory.enums.disposal_method.recycling'),
+                                'other' => __('inventory.enums.disposal_method.other'),
                             ])
                             ->searchable()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
@@ -144,7 +144,8 @@ class MaterialDisposalRequestResource extends Resource
                                             ->where('item_id', $itemId)
                                             ->first();
                                         
-                                        return $stock ? "المتاح: {$stock->balance}" : null;
+                                        $available = __('inventory.fields.available');
+                                        return $stock ? "{$available}: {$stock->balance}" : null;
                                     })
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
                                 TextInput::make('notes')->label(__('inventory.fields.notes'))

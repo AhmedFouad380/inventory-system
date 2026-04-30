@@ -35,7 +35,7 @@ class WorkOrderStockResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedCircleStack;
 
-    protected static string | UnitEnum | null $navigationGroup = 'المخازن والتقارير';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.inventory_reports'); }
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -86,10 +86,8 @@ class WorkOrderStockResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('workOrder.wo_number')->label(__('inventory.work_order'))
-                    ->label('Work order'),
-                TextEntry::make('item.description')->label(__('inventory.item'))
-                    ->label('Item'),
+                TextEntry::make('workOrder.wo_number')->label(__('inventory.work_order')),
+                TextEntry::make('item.description')->label(__('inventory.item')),
                 TextEntry::make('qty_received')
                     ->numeric(),
                 TextEntry::make('qty_issued')

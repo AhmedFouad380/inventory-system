@@ -44,7 +44,7 @@ class MaterialReturnRequestResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedArrowPath;
 
-    protected static string | UnitEnum | null $navigationGroup = 'العمليات';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
     protected static ?string $recordTitleAttribute = 'mrr_number';
 
@@ -144,7 +144,8 @@ class MaterialReturnRequestResource extends Resource
                                             ->where('item_id', $itemId)
                                             ->first();
                                         
-                                        return $stock ? "المتاح: {$stock->balance}" : null;
+                                        $available = __('inventory.fields.available');
+                                        return $stock ? "{$available}: {$stock->balance}" : null;
                                     })
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
                                 TextInput::make('return_reason')->label(__('inventory.fields.notes'))

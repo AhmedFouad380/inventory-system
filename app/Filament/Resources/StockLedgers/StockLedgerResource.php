@@ -38,7 +38,7 @@ class StockLedgerResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedListBullet;
 
-    protected static string | UnitEnum | null $navigationGroup = 'المخازن والتقارير';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.inventory_reports'); }
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -159,8 +159,8 @@ class StockLedgerResource extends Resource
                     ->preload(),
                 Filter::make('transaction_date')
                     ->form([
-                        DatePicker::make('created_from')->label('من تاريخ'),
-                        DatePicker::make('created_until')->label('إلى تاريخ'),
+                        DatePicker::make('created_from')->label(__('inventory.fields.from_date')),
+                        DatePicker::make('created_until')->label(__('inventory.fields.to_date')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query

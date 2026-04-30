@@ -44,7 +44,7 @@ class MaterialReceiptNoteResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedInboxArrowDown;
 
-    protected static string | UnitEnum | null $navigationGroup = 'العمليات';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
     protected static ?string $recordTitleAttribute = 'mrn_number';
 

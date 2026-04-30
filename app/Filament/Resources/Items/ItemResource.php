@@ -42,7 +42,7 @@ class ItemResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedCube;
 
-    protected static string | UnitEnum | null $navigationGroup = 'البيانات الأساسية';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.basic_data'); }
 
     protected static ?string $recordTitleAttribute = 'description';
 

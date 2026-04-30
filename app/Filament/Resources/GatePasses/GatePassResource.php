@@ -44,7 +44,7 @@ class GatePassResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTruck;
 
-    protected static string | UnitEnum | null $navigationGroup = 'العمليات';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
     protected static ?string $recordTitleAttribute = 'gp_number';
 
@@ -136,7 +136,8 @@ class GatePassResource extends Resource
                                             ->where('item_id', $itemId)
                                             ->first();
                                         
-                                        return $stock ? "المتاح: {$stock->balance}" : null;
+                                        $available = __('inventory.fields.available');
+                                        return $stock ? "{$available}: {$stock->balance}" : null;
                                     })
                                     ->rules([
                                         fn (Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
@@ -151,7 +152,7 @@ class GatePassResource extends Resource
                                                 ->first();
 
                                             if ($stock && $value > $stock->balance) {
-                                                $fail("الكمية المطلوبة أكبر من الرصيد المتاح ({$stock->balance})");
+                                                $fail(__('inventory.messages.insufficient_stock', ['balance' => $stock->balance]));
                                             }
                                         },
                                     ])

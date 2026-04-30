@@ -40,20 +40,20 @@ class WorkOrderTransferResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedArrowsRightLeft;
 
-    protected static string | UnitEnum | null $navigationGroup = 'العمليات';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
     protected static ?string $recordTitleAttribute = 'transfer_number';
 
-    public static function getModelLabel(): string { return 'تحويل مخزون'; }
-    public static function getPluralModelLabel(): string { return 'تحويلات أوامر العمل'; }
+    public static function getModelLabel(): string { return __('inventory.transfer'); }
+    public static function getPluralModelLabel(): string { return __('inventory.transfers'); }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('تفاصيل التحويل')
+                Section::make(__('inventory.transfer_details'))
                     ->schema([
-                        TextInput::make('transfer_number')->label('رقم التحويل')
+                        TextInput::make('transfer_number')->label(__('inventory.fields.transfer_number'))
                             ->required()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('warehouse_id')->label(__('inventory.warehouse'))
@@ -61,16 +61,16 @@ class WorkOrderTransferResource extends Resource
                             ->required()
                             ->disabled(fn ($record) => $record?->status === 'approved')
                             ->live(),
-                        Select::make('from_work_order_id')->label('من أمر عمل')
+                        Select::make('from_work_order_id')->label(__('inventory.fields.from_work_order'))
                             ->searchable()->preload()->relationship('fromWorkOrder', 'wo_number')
                             ->required()
                             ->disabled(fn ($record) => $record?->status === 'approved')
                             ->live(),
-                        Select::make('to_work_order_id')->label('إلى أمر عمل')
+                        Select::make('to_work_order_id')->label(__('inventory.fields.to_work_order'))
                             ->searchable()->preload()->relationship('toWorkOrder', 'wo_number')
                             ->required()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        DatePicker::make('transfer_date')->label('تاريخ التحويل')
+                        DatePicker::make('transfer_date')->label(__('inventory.fields.transfer_date'))
                             ->required()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('status')->label(__('inventory.fields.status'))
@@ -107,7 +107,7 @@ class WorkOrderTransferResource extends Resource
                                     })
                                     ->live()
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
-                                TextInput::make('qty_transferred')->label('الكمية المحولة')
+                                TextInput::make('qty_transferred')->label(__('inventory.fields.qty_transferred'))
                                     ->required()
                                     ->numeric()
                                     ->columnSpan(1)
@@ -122,7 +122,8 @@ class WorkOrderTransferResource extends Resource
                                             ->where('item_id', $itemId)
                                             ->first();
                                         
-                                        return $stock ? "المتاح: {$stock->balance}" : null;
+                                        $available = __('inventory.fields.balance');
+                                        return $stock ? "{$available}: {$stock->balance}" : null;
                                     })
                                     ->rules([
                                         fn (Get $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
@@ -130,14 +131,14 @@ class WorkOrderTransferResource extends Resource
                                             $fromWorkOrderId = $get('../../from_work_order_id');
                                             $warehouseId = $get('../../warehouse_id');
                                             if (!$itemId || !$fromWorkOrderId || !$warehouseId) return;
-
+ 
                                             $stock = WorkOrderStock::where('work_order_id', $fromWorkOrderId)
                                                 ->where('warehouse_id', $warehouseId)
                                                 ->where('item_id', $itemId)
                                                 ->first();
-
+ 
                                             if ($stock && $value > $stock->balance) {
-                                                $fail("الكمية المطلوبة أكبر من الرصيد المتاح في أمر العمل المصدر ({$stock->balance})");
+                                                $fail(__('inventory.messages.insufficient_stock', ['balance' => $stock->balance]));
                                             }
                                         },
                                     ])
@@ -158,13 +159,13 @@ class WorkOrderTransferResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('بيانات التحويل')
+                Section::make(__('inventory.transfer_details'))
                     ->schema([
-                        TextEntry::make('transfer_number')->label('رقم التحويل'),
+                        TextEntry::make('transfer_number')->label(__('inventory.fields.transfer_number')),
                         TextEntry::make('warehouse.name')->label(__('inventory.warehouse')),
-                        TextEntry::make('fromWorkOrder.wo_number')->label('من أمر عمل'),
-                        TextEntry::make('toWorkOrder.wo_number')->label('إلى أمر عمل'),
-                        TextEntry::make('transfer_date')->label('تاريخ التحويل')->date(),
+                        TextEntry::make('fromWorkOrder.wo_number')->label(__('inventory.fields.from_work_order')),
+                        TextEntry::make('toWorkOrder.wo_number')->label(__('inventory.fields.to_work_order')),
+                        TextEntry::make('transfer_date')->label(__('inventory.fields.transfer_date'))->date(),
                         TextEntry::make('status')->label(__('inventory.fields.status')),
                         TextEntry::make('notes')->label(__('inventory.fields.notes'))->columnSpanFull(),
                     ])->columns(2),
@@ -175,12 +176,12 @@ class WorkOrderTransferResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('transfer_number')->label('رقم التحويل')->searchable(),
+                TextColumn::make('transfer_number')->label(__('inventory.fields.transfer_number'))->searchable(),
                 TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))->searchable(),
-                TextColumn::make('fromWorkOrder.wo_number')->label('من')->searchable(),
-                TextColumn::make('toWorkOrder.wo_number')->label('إلى')->searchable(),
-                TextColumn::make('transfer_date')->label('التاريخ')->date()->sortable(),
-                TextColumn::make('status')->label('الحالة')->searchable(),
+                TextColumn::make('fromWorkOrder.wo_number')->label(__('inventory.fields.from_work_order'))->searchable(),
+                TextColumn::make('toWorkOrder.wo_number')->label(__('inventory.fields.to_work_order'))->searchable(),
+                TextColumn::make('transfer_date')->label(__('inventory.fields.transfer_date'))->date()->sortable(),
+                TextColumn::make('status')->label(__('inventory.fields.status'))->searchable(),
             ])
             ->filters([
                 //

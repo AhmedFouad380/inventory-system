@@ -27,10 +27,10 @@ class WarehouseResource extends Resource
     
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedHomeModern;
     
-    protected static string|UnitEnum|null $navigationGroup = 'البيانات الأساسية';
+    public static function getNavigationGroup(): ?string { return __('inventory.nav.basic_data'); }
 
-    public static function getModelLabel(): string { return 'مستودع'; }
-    public static function getPluralModelLabel(): string { return 'المستودعات'; }
+    public static function getModelLabel(): string { return __('inventory.warehouse'); }
+    public static function getPluralModelLabel(): string { return __('inventory.warehouses'); }
 
     public static function form(Schema $schema): Schema
     {
@@ -38,10 +38,10 @@ class WarehouseResource extends Resource
             ->components([
                 Section::make()
                     ->schema([
-                        TextInput::make('name')->label('اسم المستودع')->required(),
-                        TextInput::make('code')->label('كود المستودع')->required()->unique(ignoreRecord: true),
-                        TextInput::make('location')->label('الموقع'),
-                        Toggle::make('is_active')->label('نشط')->default(true),
+                        TextInput::make('name')->label(__('inventory.fields.warehouse_name'))->required(),
+                        TextInput::make('code')->label(__('inventory.fields.warehouse_code'))->required()->unique(ignoreRecord: true),
+                        TextInput::make('location')->label(__('inventory.fields.location')),
+                        Toggle::make('is_active')->label(__('inventory.fields.is_active'))->default(true),
                     ])->columns(2)
             ]);
     }
@@ -50,10 +50,10 @@ class WarehouseResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label('الاسم')->searchable(),
-                TextColumn::make('code')->label('الكود')->searchable(),
-                TextColumn::make('location')->label('الموقع'),
-                IconColumn::make('is_active')->label('نشط')->boolean(),
+                TextColumn::make('name')->label(__('inventory.fields.name'))->searchable(),
+                TextColumn::make('code')->label(__('inventory.fields.code'))->searchable(),
+                TextColumn::make('location')->label(__('inventory.fields.location')),
+                IconColumn::make('is_active')->label(__('inventory.fields.is_active'))->boolean(),
             ])
             ->filters([])
             ->actions([
