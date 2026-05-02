@@ -8,7 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
-use Filament\Tables\Actions\CreateAction;
+use Filament\Actions\CreateAction;
 
 class MaterialReturnRequestsRelationManager extends RelationManager
 {

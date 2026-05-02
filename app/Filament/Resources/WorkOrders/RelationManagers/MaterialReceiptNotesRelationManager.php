@@ -10,9 +10,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 
 
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\AssociateAction;
-use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\AssociateAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DissociateAction;
