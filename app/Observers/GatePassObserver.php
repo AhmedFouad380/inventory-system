@@ -12,12 +12,21 @@ class GatePassObserver
 
     public function created(GatePass $gp): void
     {
-        // Handled in Filament pages to ensure relationships are saved
+        // If GatePass created already approved, process stock
+        if ($gp->status === 'approved') {
+            $this->processApproved($gp);
+        }
     }
 
     public function updated(GatePass $gp): void
     {
-        // Handled in Filament pages to ensure relationships are saved
+        // When status changes to approved, process stock
+        if ($gp->wasChanged('status')) {
+            $original = $gp->getOriginal('status');
+            if ($original !== 'approved' && $gp->status === 'approved') {
+                $this->processApproved($gp);
+            }
+        }
     }
 
     public function processApproved(GatePass $gp): void

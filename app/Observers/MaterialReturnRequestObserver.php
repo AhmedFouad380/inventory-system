@@ -12,12 +12,21 @@ class MaterialReturnRequestObserver
 
     public function created(MaterialReturnRequest $mrr): void
     {
-        // Removed to prevent race conditions with Filament relationship saving
+        // If created already approved, process stock
+        if ($mrr->status === 'approved') {
+            $this->processApproved($mrr);
+        }
     }
 
     public function updated(MaterialReturnRequest $mrr): void
     {
-        // Removed to prevent race conditions with Filament relationship saving
+        // When status changes to approved, process stock
+        if ($mrr->wasChanged('status')) {
+            $original = $mrr->getOriginal('status');
+            if ($original !== 'approved' && $mrr->status === 'approved') {
+                $this->processApproved($mrr);
+            }
+        }
     }
 
     public function processApproved(MaterialReturnRequest $mrr): void

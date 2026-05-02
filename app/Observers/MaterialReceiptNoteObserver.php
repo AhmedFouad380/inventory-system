@@ -12,12 +12,21 @@ class MaterialReceiptNoteObserver
 
     public function created(MaterialReceiptNote $mrn): void
     {
-        // Handled in Filament pages to ensure relationships are saved
+        // If MRN is created already approved (e.g. import or CLI), process stock
+        if ($mrn->status === 'approved') {
+            $this->processApproved($mrn);
+        }
     }
 
     public function updated(MaterialReceiptNote $mrn): void
     {
-        // Handled in Filament pages to ensure relationships are saved
+        // When status changes to approved, process stock
+        if ($mrn->wasChanged('status')) {
+            $original = $mrn->getOriginal('status');
+            if ($original !== 'approved' && $mrn->status === 'approved') {
+                $this->processApproved($mrn);
+            }
+        }
     }
 
     public function processApproved(MaterialReceiptNote $mrn): void

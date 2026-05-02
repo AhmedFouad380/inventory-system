@@ -20,7 +20,7 @@ class MaterialReceiptNote extends Model {
     const STATUS_APPROVED  = 'approved';
 
     protected $fillable = [
-        'mrn_number', 'work_order_id', 'warehouse_id', 'supplier_id', 'mrn_date',
+        'mrn_number', 'work_order_id', 'reservation_number', 'warehouse_id', 'supplier_id', 'mrn_date',
         'delivery_note_ref', 'vehicle_number', 'contract_ref', 'status',
         'prepared_by', 'warehouse_keeper_id', 'approved_by', 'approved_at', 'notes',
     ];

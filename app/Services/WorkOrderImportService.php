@@ -18,6 +18,7 @@ use App\Models\GatePassItem;
 use App\Models\MaterialReturnRequest;
 use App\Models\User;
 use App\Jobs\ProcessWorkOrderSheet;
+use App\Models\Site;
 
 class WorkOrderImportService
 {
@@ -177,13 +178,20 @@ class WorkOrderImportService
         $materialmanUser = $this->ensureUserByName($data['materialman'] ?? null);
         $foremanUser = $this->ensureUserByName($data['foreman_name'] ?? null);
 
-        DB::transaction(function() use ($data, $materialmanUser, $foremanUser) {
+        // determine site 'Riyadh' if exists
+        $site = Site::where('name', 'like', '%Riyadh%')
+                    ->orWhere('name', 'like', '%الرياض%')
+                    ->first();
+
+        DB::transaction(function() use ($data, $materialmanUser, $foremanUser, $site) {
             // WorkOrder: use wo_number, project_id=1, created_by=1, opened_at = date_received
             $wo = WorkOrder::firstOrCreate(
                 ['wo_number' => $data['work_order_no']],
                 [
-                    'reservation_number' => $data['reservation'] ?? null,
                     'project_id' => 1,
+                    'site_id' => $site ? $site->id : null,
+                    'supplier_id' => 1,
+                    'contract_ref' => $data['first_reservation'] ?? $data['reservation'] ?? null,
                     'opened_at' => $data['date_received'] ?? null,
                     'created_by' => 1,
                     'status' => WorkOrder::STATUS_OPEN,
@@ -206,9 +214,11 @@ class WorkOrderImportService
                     ['work_order_id' => $wo->id, 'mrn_date' => $data['date_received']],
                     [
                         'mrn_number' => 'MRN-'.strtoupper(substr(sha1(uniqid()),0,12)),
+                        'reservation_number' => $data['reservation'] ?? null,
                         'prepared_by' => $materialmanUser ? $materialmanUser->id : 1,
                         'warehouse_keeper_id' => $materialmanUser ? $materialmanUser->id : null,
-                        'supplier_id' => null,
+                        // ensure imported MRNs are linked to supplier_id = 1
+                        'supplier_id' => 1,
                         'status' => MaterialReceiptNote::STATUS_DRAFT,
                         'warehouse_id' => 1,
                     ]
@@ -246,7 +256,8 @@ class WorkOrderImportService
                     'work_order_id' => $wo->id,
                     'mrr_date' => $data['date_received'] ?? now(),
                     'return_to' => null,
-                    'supplier_id' => null,
+                    // set supplier for returns as well
+                    'supplier_id' => 1,
                     'status' => MaterialReturnRequest::STATUS_DRAFT,
                     'prepared_by' => $foremanUser ? $foremanUser->id : 1,
                     'warehouse_id' => 1,

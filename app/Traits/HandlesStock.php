@@ -51,7 +51,9 @@ trait HandlesStock
                 'qty_in' => $qtyIn,
                 'qty_out' => $qtyOut,
                 'balance_after' => 0, // Will be updated
-                'created_by' => auth()->id(),
+                // when running in CLI or queue there may be no authenticated user
+                // fallback to system user id 1 to satisfy NOT NULL constraint
+                'created_by' => auth()->id() ?? 1,
             ]);
 
             // 4. Recalculate Balance

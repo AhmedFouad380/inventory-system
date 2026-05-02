@@ -29,7 +29,20 @@ class ProcessWorkOrderSheet implements ShouldQueue
     public function handle()
     {
         $service = new WorkOrderImportService();
+
+        // determine first reservation number for this sheet
+        $firstReservation = null;
+        foreach ($this->rows as $r) {
+            if (!empty($r['reservation'])) {
+                $firstReservation = $r['reservation'];
+                break;
+            }
+        }
+
         foreach ($this->rows as $index => $row) {
+            // attach first_reservation to row
+            $row['first_reservation'] = $firstReservation;
+
             // log raw row for debugging and append to dedicated log file
             try {
                 $logData = ['sheet' => $this->sheetIndex, 'index' => $index, 'row' => $row];
