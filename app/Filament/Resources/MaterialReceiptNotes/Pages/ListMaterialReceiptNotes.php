@@ -14,7 +14,7 @@ class ListMaterialReceiptNotes extends ListRecords
     {
         return [
             CreateAction::make(),
-            \pxlrbt\FilamentExcel\Actions\Pages\ExportAction::make()
+            \pxlrbt\FilamentExcel\Actions\ExportAction::make()
                 ->label(__('inventory.export_excel'))
                 ->color('success'),
         ];
