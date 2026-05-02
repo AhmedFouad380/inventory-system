@@ -17,6 +17,7 @@ class StockLedger extends Model {
     const TYPE_MRR          = 'mrr';
     const TYPE_TRANSFER_IN  = 'transfer_in';
     const TYPE_TRANSFER_OUT = 'transfer_out';
+    const TYPE_SUPPLIER_RETURN = 'supplier_return';
 
     protected $fillable = [
         'work_order_id', 'item_id', 'warehouse_id', 'transaction_type', 'transaction_id',

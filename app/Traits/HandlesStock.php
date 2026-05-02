@@ -30,6 +30,7 @@ trait HandlesStock
                 [
                     'qty_received' => 0, 'qty_issued' => 0, 'qty_disposed' => 0,
                     'qty_returned' => 0, 'qty_transfer_out' => 0, 'qty_transfer_in' => 0,
+                    'qty_returned_to_supplier' => 0,
                     'balance' => 0,
                 ]
             );

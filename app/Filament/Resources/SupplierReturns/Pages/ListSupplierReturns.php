@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\StockLedgers\Pages;
+namespace App\Filament\Resources\SupplierReturns\Pages;
 
-use App\Filament\Resources\StockLedgers\StockLedgerResource;
+use App\Filament\Resources\SupplierReturns\SupplierReturnResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
-class ListStockLedgers extends ListRecords
+class ListSupplierReturns extends ListRecords
 {
-    protected static string $resource = StockLedgerResource::class;
+    protected static string $resource = SupplierReturnResource::class;
 
     protected function getHeaderActions(): array
     {

@@ -12,7 +12,7 @@ class WorkOrderStock extends Model {
     protected $fillable = [
         'work_order_id', 'item_id', 'warehouse_id',
         'qty_received', 'qty_issued', 'qty_disposed',
-        'qty_returned', 'qty_transfer_out', 'qty_transfer_in', 'balance',
+        'qty_returned', 'qty_transfer_out', 'qty_transfer_in', 'qty_returned_to_supplier', 'balance',
     ];
 
     public function warehouse(): BelongsTo
@@ -27,6 +27,7 @@ class WorkOrderStock extends Model {
         'qty_returned'     => 'decimal:3',
         'qty_transfer_out' => 'decimal:3',
         'qty_transfer_in'  => 'decimal:3',
+        'qty_returned_to_supplier' => 'decimal:3',
         'balance'          => 'decimal:3',
     ];
 
@@ -50,7 +51,8 @@ class WorkOrderStock extends Model {
             + $this->qty_returned
             - $this->qty_issued
             - $this->qty_disposed
-            - $this->qty_transfer_out;
+            - $this->qty_transfer_out
+            - $this->qty_returned_to_supplier;
 
         $this->save();
     }

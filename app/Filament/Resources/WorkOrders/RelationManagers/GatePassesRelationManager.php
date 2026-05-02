@@ -74,37 +74,11 @@ class GatePassesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('gp_number')
             ->columns([
-                TextColumn::make('gp_number')
-                    ->searchable(),
-                TextColumn::make('issued_at')
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('vehicle_number')
-                    ->searchable(),
-                TextColumn::make('recipient_name')
-                    ->searchable(),
-                TextColumn::make('driver_name')
-                    ->searchable(),
-                TextColumn::make('destination')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('prepared_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('warehouseKeeper.name')
-                    ->searchable(),
-                TextColumn::make('engineer.name')
-                    ->searchable(),
+                TextColumn::make('gp_number')->label(__('inventory.fields.gp_number'))->searchable(),
+                TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))->searchable(),
+                TextColumn::make('issued_at')->label(__('inventory.fields.issued_at'))->dateTime()->sortable(),
+                TextColumn::make('status')->label(__('inventory.fields.status'))->badge()->searchable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -113,10 +87,18 @@ class GatePassesRelationManager extends RelationManager
                 TrashedFilter::make(),
             ])
             ->headerActions([
+                \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()
+                    ->label(__('inventory.export_excel'))
+                    ->color('success'),
                 CreateAction::make(),
                 AssociateAction::make(),
             ])
             ->recordActions([
+                \Filament\Actions\Action::make('view')
+                    ->label(__('filament-actions::view.single.label'))
+                    ->icon('heroicon-m-eye')
+                    ->url(fn ($record) => \App\Filament\Resources\GatePasses\GatePassResource::getUrl('view', ['record' => $record]))
+                    ->openUrlInNewTab(),
                 EditAction::make(),
                 DissociateAction::make(),
                 DeleteAction::make(),

@@ -106,6 +106,9 @@ class StockRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()
+                    ->label(__('inventory.export_excel'))
+                    ->color('success'),
                 CreateAction::make(),
                 AssociateAction::make(),
             ])

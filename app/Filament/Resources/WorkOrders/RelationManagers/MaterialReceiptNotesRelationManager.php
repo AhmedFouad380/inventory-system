@@ -76,41 +76,19 @@ class MaterialReceiptNotesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('mrn_number')
             ->columns([
-                TextColumn::make('mrn_number')
+                TextColumn::make('mrn_number')->label(__('inventory.fields.mrn_number'))
                     ->searchable(),
-                TextColumn::make('supplier.name')
+                TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))
                     ->searchable(),
-                TextColumn::make('mrn_date')
+                TextColumn::make('supplier.name')->label(__('inventory.supplier'))
+                    ->searchable(),
+                TextColumn::make('mrn_date')->label(__('inventory.fields.mrn_date'))
                     ->date()
                     ->sortable(),
-                TextColumn::make('delivery_note_ref')
+                TextColumn::make('status')->label(__('inventory.fields.status'))
+                    ->badge()
                     ->searchable(),
-                TextColumn::make('vehicle_number')
-                    ->searchable(),
-                TextColumn::make('contract_ref')
-                    ->searchable(),
-                TextColumn::make('status')
-                    ->badge(),
-                TextColumn::make('prepared_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('warehouseKeeper.name')
-                    ->searchable(),
-                TextColumn::make('approved_by')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('approved_at')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -119,10 +97,18 @@ class MaterialReceiptNotesRelationManager extends RelationManager
                 TrashedFilter::make(),
             ])
             ->headerActions([
+                \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()
+                    ->label(__('inventory.export_excel'))
+                    ->color('success'),
                 CreateAction::make(),
                 AssociateAction::make(),
             ])
             ->recordActions([
+                \Filament\Actions\Action::make('view')
+                    ->label(__('filament-actions::view.single.label'))
+                    ->icon('heroicon-m-eye')
+                    ->url(fn ($record) => \App\Filament\Resources\MaterialReceiptNotes\MaterialReceiptNoteResource::getUrl('view', ['record' => $record]))
+                    ->openUrlInNewTab(),
                 EditAction::make(),
                 DissociateAction::make(),
                 DeleteAction::make(),

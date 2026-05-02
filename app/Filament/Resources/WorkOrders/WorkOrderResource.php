@@ -36,6 +36,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -288,6 +289,7 @@ class WorkOrderResource extends Resource
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
             ]);
     }
@@ -297,6 +299,8 @@ class WorkOrderResource extends Resource
         return [
             RelationManagers\MaterialReceiptNotesRelationManager::class,
             RelationManagers\GatePassesRelationManager::class,
+            RelationManagers\MaterialReturnRequestsRelationManager::class,
+            RelationManagers\SupplierReturnsRelationManager::class,
             RelationManagers\StockRelationManager::class,
         ];
     }

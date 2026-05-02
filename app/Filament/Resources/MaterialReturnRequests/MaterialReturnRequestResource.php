@@ -32,12 +32,14 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -224,6 +226,17 @@ class MaterialReturnRequestResource extends Resource
                         TextEntry::make('createdBy.name')->label(__('inventory.fields.created_by')),
                         TextEntry::make('created_at')->dateTime(),
                     ])->columns(2)->columnSpanFull(),
+                Section::make(__('inventory.items'))
+                    ->schema([
+                        RepeatableEntry::make('items')
+                            ->schema([
+                                TextEntry::make('item.name')->label(__('inventory.item')),
+                                TextEntry::make('qty_returned')->label(__('inventory.fields.qty')),
+                                TextEntry::make('return_reason')->label(__('inventory.fields.notes')),
+                            ])
+                            ->columns(3)
+                            ->label(__('inventory.items')),
+                    ]),
             ]);
     }
 
@@ -252,6 +265,7 @@ class MaterialReturnRequestResource extends Resource
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
             ]);
     }

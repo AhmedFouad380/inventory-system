@@ -1,35 +1,28 @@
 <?php
 
-namespace App\Filament\Resources\GatePasses;
+namespace App\Filament\Resources\SupplierReturns;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Section;
 
-
-use App\Filament\Resources\GatePasses\Pages\CreateGatePass;
-use App\Filament\Resources\GatePasses\Pages\EditGatePass;
-use App\Filament\Resources\GatePasses\Pages\ListGatePasses;
-use App\Filament\Resources\GatePasses\Pages\ViewGatePass;
-use App\Filament\Resources\GatePasses\RelationManagers;
-use App\Models\GatePass;
+use App\Filament\Resources\SupplierReturns\Pages\CreateSupplierReturn;
+use App\Filament\Resources\SupplierReturns\Pages\EditSupplierReturn;
+use App\Filament\Resources\SupplierReturns\Pages\ListSupplierReturns;
+use App\Filament\Resources\SupplierReturns\Pages\ViewSupplierReturn;
+use App\Models\SupplierReturn;
 use App\Models\WorkOrderStock;
 use BackedEnum;
-use UnitEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
@@ -43,52 +36,54 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class GatePassResource extends Resource
+class SupplierReturnResource extends Resource
 {
-    protected static ?string $model = GatePass::class;
+    protected static ?string $model = SupplierReturn::class;
 
-    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTruck;
+    protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedArrowUturnLeft;
 
     public static function getNavigationGroup(): ?string { return __('inventory.nav.operations'); }
 
-    protected static ?string $recordTitleAttribute = 'gp_number';
+    protected static ?string $recordTitleAttribute = 'return_number';
 
-    public static function getModelLabel(): string { return __('inventory.gate_pass'); }
-    public static function getPluralModelLabel(): string { return __('inventory.gate_passes'); }
+    public static function getModelLabel(): string { return __('inventory.supplier_return'); }
+    public static function getPluralModelLabel(): string { return __('inventory.supplier_returns'); }
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make(__('inventory.gate_pass'))
+                Section::make(__('inventory.supplier_return'))
                     ->schema([
-                        TextInput::make('gp_number')->label(__('inventory.fields.gp_number'))
+                        TextInput::make('return_number')->label(__('inventory.fields.sr_number'))
                             ->required()
                             ->unique(ignoreRecord: true)
-                            ->default(fn () => str_pad((int) (\App\Models\GatePass::max('id') ?? 0) + 1, 5, '0', STR_PAD_LEFT))
+                            ->default(fn () => 'SRN-' . str_pad((int) (SupplierReturn::max('id') ?? 0) + 1, 5, '0', STR_PAD_LEFT))
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        Select::make('warehouse_id')->label(__('inventory.warehouse'))
-                            ->searchable()->preload()->relationship('warehouse', 'name')
-                            ->required()
-                            ->disabled(fn ($record) => $record?->status === 'approved')
-                            ->live(),
+                        
                         Select::make('work_order_id')->label(__('inventory.work_order'))
                             ->searchable()->preload()->relationship('workOrder', 'wo_number')
                             ->required()
                             ->disabled(fn ($record) => $record?->status === 'approved')
                             ->live(),
-                        DateTimePicker::make('issued_at')->label(__('inventory.fields.issued_at'))
+
+                        Select::make('supplier_id')->label(__('inventory.supplier'))
+                            ->relationship('supplier', 'name')
+                            ->searchable()->preload()
+                            ->required()
+                            ->disabled(fn ($record) => $record?->status === 'approved'),
+
+                        Select::make('warehouse_id')->label(__('inventory.warehouse'))
+                            ->searchable()->preload()->relationship('warehouse', 'name')
+                            ->required()
+                            ->disabled(fn ($record) => $record?->status === 'approved')
+                            ->live(),
+
+                        DatePicker::make('return_date')->label(__('inventory.fields.return_date'))
                             ->required()
                             ->default(now())
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('vehicle_number')->label(__('inventory.fields.vehicle_number'))
-                            ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('recipient_name')->label(__('inventory.fields.recipient_name'))
-                            ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('driver_name')->label(__('inventory.fields.driver_name'))
-                            ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('destination')->label(__('inventory.fields.destination'))
-                            ->disabled(fn ($record) => $record?->status === 'approved'),
+
                         Select::make('status')->label(__('inventory.fields.status'))
                             ->options([
                                 'draft' => __('inventory.enums.status.draft'),
@@ -97,12 +92,7 @@ class GatePassResource extends Resource
                             ->required()
                             ->default('draft')
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        Select::make('warehouse_keeper_id')->label(__('inventory.fields.warehouse_keeper'))
-                            ->searchable()->preload()->relationship('warehouseKeeper', 'name')
-                            ->disabled(fn ($record) => $record?->status === 'approved'),
-                        Select::make('engineer_id')->label(__('inventory.fields.engineer'))
-                            ->searchable()->preload()->relationship('engineer', 'name')
-                            ->disabled(fn ($record) => $record?->status === 'approved'),
+
                         Textarea::make('notes')->label(__('inventory.fields.notes'))
                             ->columnSpanFull()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
@@ -129,7 +119,8 @@ class GatePassResource extends Resource
                                     })
                                     ->live()
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
-                                TextInput::make('qty_issued')->label(__('inventory.fields.qty'))
+
+                                TextInput::make('qty')->label(__('inventory.fields.qty'))
                                     ->required()
                                     ->numeric()
                                     ->columnSpan(1)
@@ -165,14 +156,8 @@ class GatePassResource extends Resource
                                         },
                                     ])
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
-                                TextInput::make('reel_number')->label(__('inventory.fields.reel_number'))
-                                    ->columnSpan(1)
-                                    ->disabled(fn ($record) => $record?->status === 'approved'),
-                                TextInput::make('notes')->label(__('inventory.fields.notes'))
-                                    ->columnSpan(2)
-                                    ->disabled(fn ($record) => $record?->status === 'approved'),
                             ])
-                            ->columns(6)
+                            ->columns(3)
                             ->defaultItems(1)
                             ->label(__('inventory.items'))
                             ->disabled(fn ($record) => $record?->status === 'approved'),
@@ -184,31 +169,27 @@ class GatePassResource extends Resource
     {
         return $schema
             ->components([
-                Section::make(__('inventory.gate_pass'))
+                Section::make(__('inventory.supplier_return'))
                     ->schema([
-                        TextEntry::make('gp_number')->label(__('inventory.fields.gp_number')),
-                        TextEntry::make('warehouse.name')->label(__('inventory.warehouse')),
+                        TextEntry::make('return_number')->label(__('inventory.fields.sr_number')),
                         TextEntry::make('workOrder.wo_number')->label(__('inventory.work_order')),
-                        TextEntry::make('issued_at')->label(__('inventory.fields.issued_at'))->dateTime(),
-                        TextEntry::make('vehicle_number')->label(__('inventory.fields.vehicle_number')),
-                        TextEntry::make('recipient_name')->label(__('inventory.fields.recipient_name')),
-                        TextEntry::make('status')->label(__('inventory.fields.status')),
-                        TextEntry::make('warehouseKeeper.name')->label(__('inventory.fields.warehouse_keeper')),
-                        TextEntry::make('engineer.name')->label(__('inventory.fields.engineer')),
+                        TextEntry::make('supplier.name')->label(__('inventory.supplier')),
+                        TextEntry::make('warehouse.name')->label(__('inventory.warehouse')),
+                        TextEntry::make('return_date')->label(__('inventory.fields.return_date'))->date(),
+                        TextEntry::make('status')->label(__('inventory.fields.status'))->badge(),
                         TextEntry::make('notes')->label(__('inventory.fields.notes'))->columnSpanFull(),
                         TextEntry::make('createdBy.name')->label(__('inventory.fields.created_by')),
                         TextEntry::make('created_at')->dateTime(),
                     ])->columns(2)->columnSpanFull(),
+
                 Section::make(__('inventory.items'))
                     ->schema([
                         RepeatableEntry::make('items')
                             ->schema([
                                 TextEntry::make('item.name')->label(__('inventory.item')),
-                                TextEntry::make('qty_issued')->label(__('inventory.fields.qty')),
-                                TextEntry::make('reel_number')->label(__('inventory.fields.reel_number')),
-                                TextEntry::make('notes')->label(__('inventory.fields.notes')),
+                                TextEntry::make('qty')->label(__('inventory.fields.qty')),
                             ])
-                            ->columns(4)
+                            ->columns(2)
                             ->label(__('inventory.items')),
                     ]),
             ]);
@@ -217,13 +198,14 @@ class GatePassResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('gp_number')
+            ->recordTitleAttribute('return_number')
             ->columns([
-                TextColumn::make('gp_number')->label(__('inventory.fields.gp_number'))->searchable(),
-                TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))->searchable(),
+                TextColumn::make('return_number')->label(__('inventory.fields.sr_number'))->searchable(),
                 TextColumn::make('workOrder.wo_number')->label(__('inventory.work_order'))->searchable(),
-                TextColumn::make('issued_at')->label(__('inventory.fields.issued_at'))->dateTime()->sortable(),
-                TextColumn::make('status')->label(__('inventory.fields.status'))->searchable(),
+                TextColumn::make('supplier.name')->label(__('inventory.supplier'))->searchable(),
+                TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))->searchable(),
+                TextColumn::make('return_date')->label(__('inventory.fields.return_date'))->date()->sortable(),
+                TextColumn::make('status')->label(__('inventory.fields.status'))->badge()->searchable(),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -254,10 +236,10 @@ class GatePassResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListGatePasses::route('/'),
-            'create' => CreateGatePass::route('/create'),
-            'view' => ViewGatePass::route('/{record}'),
-            'edit' => EditGatePass::route('/{record}/edit'),
+            'index' => ListSupplierReturns::route('/'),
+            'create' => CreateSupplierReturn::route('/create'),
+            'view' => ViewSupplierReturn::route('/{record}'),
+            'edit' => EditSupplierReturn::route('/{record}/edit'),
         ];
     }
 

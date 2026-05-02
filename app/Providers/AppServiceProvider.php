@@ -34,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\MaterialDisposalRequest::observe(\App\Observers\MaterialDisposalRequestObserver::class);
         \App\Models\MaterialReturnRequest::observe(\App\Observers\MaterialReturnRequestObserver::class);
         \App\Models\WorkOrderTransfer::observe(\App\Observers\WorkOrderTransferObserver::class);
+        \App\Models\SupplierReturn::observe(\App\Observers\SupplierReturnObserver::class);
     }
 }

@@ -14,6 +14,9 @@ class ListWorkOrderStocks extends ListRecords
     {
         return [
             CreateAction::make(),
+            \pxlrbt\FilamentExcel\Actions\Pages\ExportAction::make()
+                ->label(__('inventory.export_excel'))
+                ->color('success'),
         ];
     }
 }

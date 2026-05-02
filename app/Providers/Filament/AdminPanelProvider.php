@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -43,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('2.5rem')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
+                \App\Filament\Widgets\DashboardLogoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -59,9 +60,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->renderHook(
-                PanelsRenderHook::PAGE_START,
-                fn (): string => Blade::render('@include(\'filament.settings.logos\')'),
-            );
+            ;
     }
 }
