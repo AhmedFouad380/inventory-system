@@ -87,9 +87,6 @@ class GatePassesRelationManager extends RelationManager
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()
-                    ->label(__('inventory.export_excel'))
-                    ->color('success'),
                 CreateAction::make(),
                 AssociateAction::make(),
             ])
@@ -111,6 +108,7 @@ class GatePassesRelationManager extends RelationManager
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
+                    \pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction::make(),
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query

@@ -34,9 +34,7 @@ class SupplierReturnsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                \pxlrbt\FilamentExcel\Actions\Tables\ExportAction::make()
-                    ->label(__('inventory.export_excel'))
-                    ->color('success'),
+                //
             ])
             ->recordActions([
                 \Filament\Actions\Action::make('view')
@@ -46,7 +44,9 @@ class SupplierReturnsRelationManager extends RelationManager
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([
-                //
+                \Filament\Actions\BulkActionGroup::make([
+                    \pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction::make(),
+                ]),
             ]);
     }
 }
