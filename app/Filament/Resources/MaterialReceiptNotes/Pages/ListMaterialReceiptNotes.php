@@ -16,15 +16,15 @@ class ListMaterialReceiptNotes extends ListRecords
     {
         return [
             CreateAction::make(),
-            \pxlrbt\FilamentExcel\Actions\ExportAction::make()
-                ->label(__('inventory.export_excel'))
-                ->color('success'),
-            $this->getPdfExportAction(
-                __('inventory.mrns'),
-                [__('inventory.fields.mrn_number'), __('inventory.fields.status'), __('inventory.fields.mrn_date')],
-                ['mrn_number', 'status', 'mrn_date'],
-                'material-receipt-notes'
-            ),
+            // \pxlrbt\FilamentExcel\Actions\ExportAction::make()
+            //     ->label(__('inventory.export_excel'))
+            //     ->color('success'),
+            // $this->getPdfExportAction(
+            //     __('inventory.mrns'),
+            //     [__('inventory.fields.mrn_number'), __('inventory.fields.status'), __('inventory.fields.mrn_date')],
+            //     ['mrn_number', 'status', 'mrn_date'],
+            //     'material-receipt-notes'
+            // ),
         ];
     }
 }

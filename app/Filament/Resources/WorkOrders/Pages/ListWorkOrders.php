@@ -16,15 +16,15 @@ class ListWorkOrders extends ListRecords
     {
         return [
             CreateAction::make(),
-            \pxlrbt\FilamentExcel\Actions\ExportAction::make()
-                ->label(__('inventory.export_excel'))
-                ->color('success'),
-            $this->getPdfExportAction(
-                __('inventory.work_orders'),
-                [__('inventory.fields.wo_number'), __('inventory.fields.status'), __('inventory.fields.opened_at')],
-                ['wo_number', 'status', 'opened_at'],
-                'work-orders'
-            ),
+            // \pxlrbt\FilamentExcel\Actions\ExportAction::make()
+            //     ->label(__('inventory.export_excel'))
+            //     ->color('success'),
+            // $this->getPdfExportAction(
+            //     __('inventory.work_orders'),
+            //     [__('inventory.fields.wo_number'), __('inventory.fields.status'), __('inventory.fields.opened_at')],
+            //     ['wo_number', 'status', 'opened_at'],
+            //     'work-orders'
+            // ),
         ];
     }
 }

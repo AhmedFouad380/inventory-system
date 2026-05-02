@@ -290,6 +290,25 @@ class WorkOrderResource extends Resource
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                     ExportBulkAction::make(),
+                    \Filament\Actions\BulkAction::make('export_pdf_bulk')
+                        ->label('تصدير PDF')
+                        ->color('danger')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $rows = $records->map(fn ($item) => [
+                                $item->wo_number,
+                                $item->status,
+                                $item->opened_at?->format('Y-m-d'),
+                            ])->toArray();
+
+                            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.inventory-report', [
+                                'title' => __('inventory.work_orders'),
+                                'headers' => [__('inventory.fields.wo_number'), __('inventory.fields.status'), __('inventory.fields.opened_at')],
+                                'data' => $rows,
+                            ]);
+
+                            return response()->streamDownload(fn () => print($pdf->output()), 'work-orders.pdf');
+                        }),
                 ]),
             ]);
     }

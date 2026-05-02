@@ -240,6 +240,25 @@ class GatePassResource extends Resource
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                     ExportBulkAction::make(),
+                    \Filament\Actions\BulkAction::make('export_pdf_bulk')
+                        ->label('تصدير PDF')
+                        ->color('danger')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $rows = $records->map(fn ($item) => [
+                                $item->gp_number,
+                                $item->status,
+                                $item->issued_at?->format('Y-m-d'),
+                            ])->toArray();
+
+                            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.inventory-report', [
+                                'title' => __('inventory.gate_passes'),
+                                'headers' => [__('inventory.fields.gp_number'), __('inventory.fields.status'), __('inventory.fields.issued_at')],
+                                'data' => $rows,
+                            ]);
+
+                            return response()->streamDownload(fn () => print($pdf->output()), 'gate-pass-reports.pdf');
+                        }),
                 ]),
             ]);
     }

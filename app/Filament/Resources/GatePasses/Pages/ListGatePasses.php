@@ -16,15 +16,15 @@ class ListGatePasses extends ListRecords
     {
         return [
             CreateAction::make(),
-            \pxlrbt\FilamentExcel\Actions\ExportAction::make()
-                ->label(__('inventory.export_excel'))
-                ->color('success'),
-            $this->getPdfExportAction(
-                __('inventory.gate_passes'),
-                [__('inventory.fields.gp_number'), __('inventory.fields.status'), __('inventory.fields.issued_at')],
-                ['gp_number', 'status', 'issued_at'],
-                'gate-passes'
-            ),
+            // \pxlrbt\FilamentExcel\Actions\ExportAction::make()
+            //     ->label(__('inventory.export_excel'))
+            //     ->color('success'),
+            // $this->getPdfExportAction(
+            //     __('inventory.gate_passes'),
+            //     [__('inventory.fields.gp_number'), __('inventory.fields.status'), __('inventory.fields.issued_at')],
+            //     ['gp_number', 'status', 'issued_at'],
+            //     'gate-passes'
+            // ),
         ];
     }
 }
