@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('item_code')->unique();
             $table->string('name');
             $table->string('description');
-            $table->enum('unit', ['pcs', 'meter', 'kg', 'roll', 'box', 'drum', 'set', 'bag', 'liter'])->default('pcs');
+            $table->string('unit')->default('pcs');
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();

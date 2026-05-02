@@ -27,6 +27,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -59,6 +62,8 @@ class MaterialReturnRequestResource extends Resource
                     ->schema([
                         TextInput::make('mrr_number')->label(__('inventory.fields.mrr_number'))
                             ->required()
+                            ->unique(ignoreRecord: true)
+                            ->default(fn () => str_pad((int) (\App\Models\MaterialReturnRequest::max('id') ?? 0) + 1, 5, '0', STR_PAD_LEFT))
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('warehouse_id')->label(__('inventory.warehouse'))
                             ->searchable()->preload()->relationship('warehouse', 'name')
@@ -73,13 +78,39 @@ class MaterialReturnRequestResource extends Resource
                             ->afterStateUpdated(function (\Filament\Schemas\Components\Utilities\Set $set, $state) {
                                 if (!$state) {
                                     $set('supplier_id', null);
+                                    $set('gate_pass_id', null);
                                     return;
                                 }
-                                // Get the first MRN supplier for this work order
                                 $supplierId = \App\Models\MaterialReceiptNote::where('work_order_id', $state)
                                     ->value('supplier_id');
                                 $set('supplier_id', $supplierId);
                             }),
+                        Select::make('gate_pass_id')->label(__('inventory.gate_pass'))
+                            ->relationship('gatePass', 'gp_number', function (Builder $query, Get $get) {
+                                $workOrderId = $get('work_order_id');
+                                if ($workOrderId) {
+                                    return $query->where('work_order_id', $workOrderId);
+                                }
+                                return $query;
+                            })
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function ($state, \Filament\Schemas\Components\Utilities\Set $set) {
+                                if (!$state) return;
+                                $gp = \App\Models\GatePass::find($state);
+                                if ($gp) {
+                                    $set('work_order_id', $gp->work_order_id);
+                                    $set('warehouse_id', $gp->warehouse_id);
+                                    $set('engineer_id', $gp->engineer_id);
+                                }
+                            })
+                            ->disabled(fn ($record) => $record?->status === 'approved'),
+                        Select::make('engineer_id')->label(__('inventory.fields.engineer'))
+                            ->relationship('engineer', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('supplier_id')->label(__('inventory.supplier'))
                             ->relationship('supplier', 'name')
                             ->searchable()
@@ -89,6 +120,7 @@ class MaterialReturnRequestResource extends Resource
                             ->dehydrated(),
                         DatePicker::make('mrr_date')->label(__('inventory.fields.mrr_date'))
                             ->required()
+                            ->default(now())
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         TextInput::make('return_to')->label(__('inventory.fields.return_to'))
                             ->disabled(fn ($record) => $record?->status === 'approved'),
@@ -106,7 +138,7 @@ class MaterialReturnRequestResource extends Resource
                         Textarea::make('notes')->label(__('inventory.fields.notes'))
                             ->columnSpanFull()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                    ])->columns(2),
+                    ])->columns(3),
 
                 Section::make(__('inventory.items'))
                     ->schema([
@@ -117,13 +149,19 @@ class MaterialReturnRequestResource extends Resource
                                     ->required()
                                     ->columnSpan(2)
                                     ->options(function (Get $get) {
+                                        $gatePassId = $get('../../gate_pass_id');
+                                        if ($gatePassId) {
+                                            return \App\Models\GatePassItem::where('gate_pass_id', $gatePassId)
+                                                ->join('items', 'items.id', '=', 'gate_pass_items.item_id')
+                                                ->pluck('items.name', 'items.id');
+                                        }
+
                                         $workOrderId = $get('../../work_order_id');
                                         $warehouseId = $get('../../warehouse_id');
                                         if (!$workOrderId || !$warehouseId) return [];
                                         
                                         return WorkOrderStock::where('work_order_id', $workOrderId)
                                             ->where('warehouse_id', $warehouseId)
-                                            ->where('balance', '>', 0)
                                             ->join('items', 'items.id', '=', 'work_order_stocks.item_id')
                                             ->pluck('items.name', 'items.id');
                                     })
@@ -135,6 +173,16 @@ class MaterialReturnRequestResource extends Resource
                                     ->columnSpan(1)
                                     ->hint(function (Get $get) {
                                         $itemId = $get('item_id');
+                                        $gatePassId = $get('../../gate_pass_id');
+                                        if ($gatePassId && $itemId) {
+                                            $gpItem = \App\Models\GatePassItem::where('gate_pass_id', $gatePassId)
+                                                ->where('item_id', $itemId)
+                                                ->first();
+                                            if ($gpItem) {
+                                                return "المنصرف في التصريح: {$gpItem->qty_issued}";
+                                            }
+                                        }
+
                                         $workOrderId = $get('../../work_order_id');
                                         $warehouseId = $get('../../warehouse_id');
                                         if (!$itemId || !$workOrderId || !$warehouseId) return null;
@@ -197,6 +245,14 @@ class MaterialReturnRequestResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()->hidden(fn ($record) => $record?->status === 'approved'),
+                DeleteAction::make()->hidden(fn ($record) => $record?->status === 'approved'),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                ]),
             ]);
     }
 

@@ -8,6 +8,11 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Section;
+use App\Models\Site;
 
 
 use App\Filament\Resources\WorkOrders\Pages\CreateWorkOrder;
@@ -58,37 +63,131 @@ class WorkOrderResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('wo_number')
-                    ->label(__('inventory.fields.wo_number'))
-                    ->required(),
-                Select::make('project_id')
-                    ->label(__('inventory.project'))
-                    ->searchable()->preload()->relationship('project', 'name')
-                    ->required(),
-                Select::make('site_id')
-                    ->label(__('inventory.site'))
-                    ->searchable()->preload()->relationship('site', 'name'),
-                Select::make('contractor_id')
-                    ->label(__('inventory.contractor'))
-                    ->searchable()->preload()->relationship('contractor', 'name'),
-                TextInput::make('contract_ref')->label(__('inventory.fields.contract_ref')),
-                Select::make('status')
-                    ->label(__('inventory.fields.status'))
-                    ->options([
-                        'open' => __('inventory.enums.status.open'),
-                        'closed' => __('inventory.enums.status.closed'),
-                        'suspended' => __('inventory.enums.status.suspended'),
+                Section::make(__('inventory.work_order'))
+                    ->schema([
+                        TextInput::make('wo_number')
+                            ->label(__('inventory.fields.wo_number'))
+                            ->required(),
+                        Select::make('project_id')
+                            ->label(__('inventory.project'))
+                            ->searchable()
+                            ->preload()
+                            ->relationship('project', 'name')
+                            ->live()
+                            ->required()
+                            ->afterStateUpdated(fn (Set $set) => $set('site_id', null)),
+                        Select::make('site_id')
+                            ->label(__('inventory.site'))
+                            ->searchable()
+                            ->preload()
+                            ->relationship('site', 'name', function (Builder $query, Get $get) {
+                                $projectId = $get('project_id');
+                                if ($projectId) {
+                                    return $query->where('project_id', $projectId);
+                                }
+                                return $query;
+                            })
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                if ($state) {
+                                    $site = Site::find($state);
+                                    if ($site && $site->project_id) {
+                                        $set('project_id', $site->project_id);
+                                    }
+                                }
+                            }),
+                        Select::make('supplier_id')
+                            ->label(__('inventory.supplier'))
+                            ->searchable()
+                            ->preload()
+                            ->relationship('supplier', 'name'),
+                        TextInput::make('contract_ref')->label(__('inventory.fields.contract_ref')),
+                        Select::make('status')
+                            ->label(__('inventory.fields.status'))
+                            ->options([
+                                'open' => __('inventory.enums.status.open'),
+                                'closed' => __('inventory.enums.status.closed'),
+                                'suspended' => __('inventory.enums.status.suspended'),
+                            ])
+                            ->required()
+                            ->default('open'),
+                        DatePicker::make('opened_at')
+                            ->label(__('inventory.fields.opened_at'))
+                            ->required(),
+                        DatePicker::make('closed_at')
+                            ->label(__('inventory.fields.closed_at')),
+                        
+                        Textarea::make('notes')->label(__('inventory.fields.notes'))
+                            ->columnSpanFull(),
+                    ])->columns(2),
+
+                Section::make(__('inventory.mrns'))
+                    ->schema([
+                        Repeater::make('materialReceiptNotes')
+                            ->relationship()
+                            ->schema([
+                                TextInput::make('mrn_number')
+                                    ->label(__('inventory.fields.mrn_number'))
+                                    ->required()
+                                    ->default(fn () => 'MRN-' . strtoupper(uniqid())),
+                                Select::make('warehouse_id')
+                                    ->label(__('inventory.warehouse'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->relationship('warehouse', 'name')
+                                    ->required(),
+                                Select::make('supplier_id')
+                                    ->label(__('inventory.supplier'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->relationship('supplier', 'name')
+                                    ->required(),
+                                DatePicker::make('mrn_date')
+                                    ->label(__('inventory.fields.mrn_date'))
+                                    ->required()
+                                    ->default(now()),
+                                TextInput::make('delivery_note_ref')
+                                    ->label(__('inventory.fields.delivery_note_ref')),
+                                TextInput::make('vehicle_number')
+                                    ->label(__('inventory.fields.vehicle_number')),
+                                Select::make('status')
+                                    ->label(__('inventory.fields.status'))
+                                    ->options([
+                                        'draft' => __('inventory.enums.status.draft'),
+                                        'approved' => __('inventory.enums.status.approved'),
+                                    ])
+                                    ->required()
+                                    ->default('draft'),
+                                
+                                Section::make(__('inventory.items'))
+                                    ->schema([
+                                        Repeater::make('items')
+                                            ->relationship()
+                                            ->schema([
+                                                Select::make('item_id')
+                                                    ->label(__('inventory.item'))
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->relationship('item', 'name')
+                                                    ->required()
+                                                    ->columnSpan(2),
+                                                TextInput::make('qty_received')
+                                                    ->label(__('inventory.fields.qty'))
+                                                    ->required()
+                                                    ->numeric()
+                                                    ->columnSpan(1),
+                                                TextInput::make('notes')
+                                                    ->label(__('inventory.fields.notes'))
+                                                    ->columnSpan(3),
+                                            ])
+                                            ->columns(6)
+                                            ->defaultItems(1)
+                                    ])
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->itemLabel(fn (array $state): ?string => $state['mrn_number'] ?? null),
                     ])
-                    ->required()
-                    ->default('open'),
-                DatePicker::make('opened_at')
-                    ->label(__('inventory.fields.opened_at'))
-                    ->required(),
-                DatePicker::make('closed_at')
-                    ->label(__('inventory.fields.closed_at')),
-                
-                Textarea::make('notes')->label(__('inventory.fields.notes'))
-                    ->columnSpanFull(),
             ]);
     }
 
@@ -102,8 +201,8 @@ class WorkOrderResource extends Resource
                 TextEntry::make('site.name')
                     ->label('Site')
                     ->placeholder('-'),
-                TextEntry::make('contractor.name')
-                    ->label('Contractor')
+                TextEntry::make('supplier.name')
+                    ->label(__('inventory.supplier'))
                     ->placeholder('-'),
                 TextEntry::make('contract_ref')
                     ->placeholder('-'),
@@ -141,7 +240,7 @@ class WorkOrderResource extends Resource
                     ->searchable(),
                 TextColumn::make('site.name')->label(__('inventory.site'))
                     ->searchable(),
-                TextColumn::make('contractor.name')->label(__('inventory.contractor'))
+                TextColumn::make('supplier.name')->label(__('inventory.supplier'))
                     ->searchable(),
                 TextColumn::make('contract_ref')->label(__('inventory.fields.contract_ref'))
                     ->searchable(),

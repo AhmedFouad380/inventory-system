@@ -22,4 +22,23 @@ class EditWorkOrder extends EditRecord
             RestoreAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        $wo = $this->record;
+        $wo->load('materialReceiptNotes.items');
+        
+        foreach ($wo->materialReceiptNotes as $mrn) {
+            if ($mrn->status === 'approved') {
+                $exists = \App\Models\StockLedger::where('transaction_type', \App\Models\StockLedger::TYPE_MRN)
+                    ->where('transaction_id', $mrn->id)
+                    ->exists();
+                    
+                if (!$exists) {
+                    $observer = new \App\Observers\MaterialReceiptNoteObserver();
+                    $observer->processApproved($mrn);
+                }
+            }
+        }
+    }
 }

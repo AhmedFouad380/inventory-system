@@ -12,20 +12,22 @@ class MaterialReceiptNoteObserver
 
     public function created(MaterialReceiptNote $mrn): void
     {
-        if ($mrn->status === 'approved') {
-            $this->processApproved($mrn);
-        }
+        // Handled in Filament pages to ensure relationships are saved
     }
 
     public function updated(MaterialReceiptNote $mrn): void
     {
-        if ($mrn->isDirty('status') && $mrn->status === 'approved') {
-            $this->processApproved($mrn);
-        }
+        // Handled in Filament pages to ensure relationships are saved
     }
 
-    private function processApproved(MaterialReceiptNote $mrn): void
+    public function processApproved(MaterialReceiptNote $mrn): void
     {
+        \Illuminate\Support\Facades\Log::info("ProcessApproved called for MRN: " . $mrn->id . " Items: " . $mrn->items->count());
+        
+        if ($mrn->status !== 'approved') {
+            return;
+        }
+
         foreach ($mrn->items as $item) {
             $this->updateStock(
                 $mrn->work_order_id,

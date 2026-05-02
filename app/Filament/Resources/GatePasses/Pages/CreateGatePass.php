@@ -14,4 +14,16 @@ class CreateGatePass extends CreateRecord
     {
         return MaxWidth::Full;
     }
+
+    protected function afterCreate(): void
+    {
+        $gp = $this->record;
+        $gp->load('items');
+        \Illuminate\Support\Facades\Log::info("CreateGatePass afterCreate called for ID: " . $gp->id . " Status: " . $gp->status);
+        
+        if ($gp->status === 'approved') {
+            $observer = new \App\Observers\GatePassObserver();
+            $observer->processApproved($gp);
+        }
+    }
 }

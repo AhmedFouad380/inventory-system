@@ -26,4 +26,25 @@ class EditGatePass extends EditRecord
     {
         return MaxWidth::Full;
     }
+
+    protected function afterSave(): void
+    {
+        $gp = $this->record;
+        $gp->load('items');
+        \Illuminate\Support\Facades\Log::info("EditGatePass afterSave called for ID: " . $gp->id . " Status: " . $gp->status);
+        
+        if ($gp->status === 'approved') {
+            $exists = \App\Models\StockLedger::where('transaction_type', \App\Models\StockLedger::TYPE_GATE_PASS)
+                ->where('transaction_id', $gp->id)
+                ->exists();
+                
+            if (!$exists) {
+                \Illuminate\Support\Facades\Log::info("GatePass approved and not in ledger, processing...");
+                $observer = new \App\Observers\GatePassObserver();
+                $observer->processApproved($gp);
+            } else {
+                \Illuminate\Support\Facades\Log::info("GatePass already processed in ledger.");
+            }
+        }
+    }
 }

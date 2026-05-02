@@ -27,6 +27,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -59,6 +62,8 @@ class MaterialReceiptNoteResource extends Resource
                     ->schema([
                         TextInput::make('mrn_number')->label(__('inventory.fields.mrn_number'))
                             ->required()
+                            ->unique(ignoreRecord: true)
+                            ->default(fn () => str_pad((int) (\App\Models\MaterialReceiptNote::max('id') ?? 0) + 1, 5, '0', STR_PAD_LEFT))
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('warehouse_id')->label(__('inventory.warehouse'))
                             ->searchable()->preload()->relationship('warehouse', 'name')
@@ -192,11 +197,11 @@ class MaterialReceiptNoteResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()->hidden(fn ($record) => $record?->status === 'approved'),
-                ForceDeleteBulkAction::make(),
+                DeleteAction::make()->hidden(fn ($record) => $record?->status === 'approved'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()->hidden(fn ($record) => $record?->status === 'approved'),
+                    DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),

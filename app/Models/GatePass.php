@@ -18,6 +18,7 @@ class GatePass extends Model {
     const STATUS_DRAFT     = 'draft';
     const STATUS_ISSUED    = 'issued';
     const STATUS_CONFIRMED = 'confirmed';
+    const STATUS_APPROVED  = 'approved';
 
     protected $fillable = [
         'gp_number', 'work_order_id', 'issued_at', 'vehicle_number',

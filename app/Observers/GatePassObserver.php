@@ -12,21 +12,25 @@ class GatePassObserver
 
     public function created(GatePass $gp): void
     {
-        if ($gp->status === 'approved') {
-            $this->processApproved($gp);
-        }
+        // Handled in Filament pages to ensure relationships are saved
     }
 
     public function updated(GatePass $gp): void
     {
-        if ($gp->isDirty('status') && $gp->status === 'approved') {
-            $this->processApproved($gp);
-        }
+        // Handled in Filament pages to ensure relationships are saved
     }
 
-    private function processApproved(GatePass $gp): void
+    public function processApproved(GatePass $gp): void
     {
+        \Illuminate\Support\Facades\Log::info("ProcessApproved called for GatePass ID: " . $gp->id . " Status: " . $gp->status . " Items Count: " . $gp->items()->count());
+        
+        if ($gp->status !== 'approved') {
+            \Illuminate\Support\Facades\Log::warning("GatePass is not approved, skipping stock update.");
+            return;
+        }
+
         foreach ($gp->items as $item) {
+            \Illuminate\Support\Facades\Log::info("Processing Item ID: " . $item->item_id . " Qty: " . $item->qty_issued);
             $this->updateStock(
                 $gp->work_order_id,
                 $item->item_id,

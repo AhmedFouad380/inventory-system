@@ -26,4 +26,21 @@ class EditMaterialReceiptNote extends EditRecord
     {
         return MaxWidth::Full;
     }
+
+    protected function afterSave(): void
+    {
+        $mrn = $this->record->refresh();
+        $mrn->load('items');
+        
+        if ($mrn->status === 'approved') {
+            $exists = \App\Models\StockLedger::where('transaction_type', \App\Models\StockLedger::TYPE_MRN)
+                ->where('transaction_id', $mrn->id)
+                ->exists();
+                
+            if (!$exists) {
+                $observer = new \App\Observers\MaterialReceiptNoteObserver();
+                $observer->processApproved($mrn);
+            }
+        }
+    }
 }

@@ -17,7 +17,7 @@ class CreateMaterialReturnRequest extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $mrr = $this->record;
+        $mrr = $this->record->refresh();
         $mrr->load('items');
         
         if ($mrr->status === 'approved') {

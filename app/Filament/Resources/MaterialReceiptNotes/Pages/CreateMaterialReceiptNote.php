@@ -14,4 +14,15 @@ class CreateMaterialReceiptNote extends CreateRecord
     {
         return MaxWidth::Full;
     }
+
+    protected function afterCreate(): void
+    {
+        $mrn = $this->record;
+        $mrn->load('items');
+        
+        if ($mrn->status === 'approved') {
+            $observer = new \App\Observers\MaterialReceiptNoteObserver();
+            $observer->processApproved($mrn);
+        }
+    }
 }

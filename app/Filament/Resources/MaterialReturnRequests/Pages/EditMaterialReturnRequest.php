@@ -29,7 +29,7 @@ class EditMaterialReturnRequest extends EditRecord
 
     protected function afterSave(): void
     {
-        $mrr = $this->record;
+        $mrr = $this->record->refresh();
         $mrr->load('items');
         
         if ($mrr->status === 'approved') {

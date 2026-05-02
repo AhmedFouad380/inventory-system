@@ -38,7 +38,7 @@ trait HandlesStock
             $stock->increment($stockField, $qty);
 
             // 3. Create StockLedger entry
-            $qtyIn = in_array($transactionType, [StockLedger::TYPE_MRN, StockLedger::TYPE_TRANSFER_IN]) ? $qty : 0;
+            $qtyIn = in_array($transactionType, [StockLedger::TYPE_MRN, StockLedger::TYPE_TRANSFER_IN, StockLedger::TYPE_MRR]) ? $qty : 0;
             $qtyOut = $qtyIn === 0 ? $qty : 0;
 
             StockLedger::create([

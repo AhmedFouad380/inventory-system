@@ -17,9 +17,10 @@ class MaterialReturnRequest extends Model {
 
     const STATUS_DRAFT     = 'draft';
     const STATUS_CONFIRMED = 'confirmed';
+    const STATUS_APPROVED  = 'approved';
 
     protected $fillable = [
-        'mrr_number', 'work_order_id', 'warehouse_id', 'supplier_id', 'mrr_date', 'return_to',
+        'mrr_number', 'work_order_id', 'gate_pass_id', 'engineer_id', 'warehouse_id', 'supplier_id', 'mrr_date', 'return_to',
         'transport_details', 'receiver_signature', 'status', 'prepared_by', 'notes',
     ];
 
@@ -28,6 +29,16 @@ class MaterialReturnRequest extends Model {
     public function workOrder(): BelongsTo
     {
         return $this->belongsTo(WorkOrder::class);
+    }
+
+    public function gatePass(): BelongsTo
+    {
+        return $this->belongsTo(GatePass::class);
+    }
+
+    public function engineer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'engineer_id');
     }
 
     public function warehouse(): BelongsTo

@@ -36,6 +36,8 @@ class ContractorResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function getNavigationGroup(): ?string { return __('inventory.nav.basic_data'); }
 
     protected static ?string $recordTitleAttribute = 'name';

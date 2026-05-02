@@ -47,9 +47,9 @@ class WorkOrderStock extends Model {
     {
         $this->balance = $this->qty_received
             + $this->qty_transfer_in
+            + $this->qty_returned
             - $this->qty_issued
             - $this->qty_disposed
-            - $this->qty_returned
             - $this->qty_transfer_out;
 
         $this->save();

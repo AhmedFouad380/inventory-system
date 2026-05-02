@@ -20,7 +20,7 @@ class WorkOrder extends Model {
     const STATUS_SUSPENDED = 'suspended';
 
     protected $fillable = [
-        'wo_number', 'project_id', 'site_id', 'contractor_id',
+        'wo_number', 'reservation_number', 'project_id', 'site_id', 'supplier_id',
         'contract_ref', 'status', 'opened_at', 'closed_at', 'created_by', 'notes',
     ];
 
@@ -39,9 +39,9 @@ class WorkOrder extends Model {
         return $this->belongsTo(Site::class);
     }
 
-    public function contractor(): BelongsTo
+    public function supplier(): BelongsTo
     {
-        return $this->belongsTo(Contractor::class);
+        return $this->belongsTo(Supplier::class);
     }
 
     public function createdBy(): BelongsTo
