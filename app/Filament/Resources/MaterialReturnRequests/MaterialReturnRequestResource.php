@@ -266,6 +266,25 @@ class MaterialReturnRequestResource extends Resource
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                     ExportBulkAction::make(),
+                    \Filament\Actions\BulkAction::make('export_pdf_bulk')
+                        ->label('تصدير PDF')
+                        ->color('danger')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $rows = $records->map(fn ($item) => [
+                                $item->mrr_number,
+                                $item->status,
+                                $item->mrr_date?->format('Y-m-d'),
+                            ])->toArray();
+
+                            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.inventory-report', [
+                                'title' => __('inventory.mrrs'),
+                                'headers' => [__('inventory.fields.mrr_number'), __('inventory.fields.status'), __('inventory.fields.mrr_date')],
+                                'data' => $rows,
+                            ]);
+
+                            return response()->streamDownload(fn () => print($pdf->output()), 'mrr-reports.pdf');
+                        }),
                 ]),
             ]);
     }

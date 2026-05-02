@@ -16,15 +16,15 @@ class ListSupplierReturns extends ListRecords
     {
         return [
             CreateAction::make(),
-            \pxlrbt\FilamentExcel\Actions\ExportAction::make()
-                ->label(__('inventory.export_excel'))
-                ->color('success'),
-            $this->getPdfExportAction(
-                __('inventory.supplier_returns'),
-                [__('inventory.fields.sr_number'), __('inventory.fields.status'), __('inventory.fields.return_date')],
-                ['return_number', 'status', 'return_date'],
-                'supplier-returns'
-            ),
+            // \pxlrbt\FilamentExcel\Actions\ExportAction::make()
+            //     ->label(__('inventory.export_excel'))
+            //     ->color('success'),
+            // $this->getPdfExportAction(
+            //     __('inventory.supplier_returns'),
+            //     [__('inventory.fields.sr_number'), __('inventory.fields.status'), __('inventory.fields.return_date')],
+            //     ['return_number', 'status', 'return_date'],
+            //     'supplier-returns'
+            // ),
         ];
     }
 }

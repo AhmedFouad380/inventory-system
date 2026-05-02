@@ -16,15 +16,15 @@ class ListMaterialReturnRequests extends ListRecords
     {
         return [
             CreateAction::make(),
-            \pxlrbt\FilamentExcel\Actions\ExportAction::make()
-                ->label(__('inventory.export_excel'))
-                ->color('success'),
-            $this->getPdfExportAction(
-                __('inventory.mrrs'),
-                [__('inventory.fields.mrr_number'), __('inventory.fields.status'), __('inventory.fields.mrr_date')],
-                ['mrr_number', 'status', 'mrr_date'],
-                'material-return-requests'
-            ),
+            // \pxlrbt\FilamentExcel\Actions\ExportAction::make()
+            //     ->label(__('inventory.export_excel'))
+            //     ->color('success'),
+            // $this->getPdfExportAction(
+            //     __('inventory.mrrs'),
+            //     [__('inventory.fields.mrr_number'), __('inventory.fields.status'), __('inventory.fields.mrr_date')],
+            //     ['mrr_number', 'status', 'mrr_date'],
+            //     'material-return-requests'
+            // ),
         ];
     }
 }
