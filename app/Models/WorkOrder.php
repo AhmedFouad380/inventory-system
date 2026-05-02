@@ -88,4 +88,9 @@ class WorkOrder extends Model {
     {
         return $this->hasMany(WorkOrderTransfer::class, 'to_work_order_id');
     }
+
+    public function supplierReturns(): HasMany
+    {
+        return $this->hasMany(SupplierReturn::class);
+    }
 }
