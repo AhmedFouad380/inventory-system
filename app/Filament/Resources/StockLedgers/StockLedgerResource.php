@@ -120,10 +120,10 @@ class StockLedgerResource extends Resource
                 TextColumn::make('transaction_date')->label(__('inventory.fields.mrn_date'))
                     ->date()
                     ->sortable(),
-                TextColumn::make('qty_in')->label(__('inventory.fields.qty'))
+                TextColumn::make('qty_in')->label(__('inventory.fields.qty_in'))
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('qty_out')->label(__('inventory.fields.qty'))
+                TextColumn::make('qty_out')->label(__('inventory.fields.qty_out'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('balance_after')->label(__('inventory.fields.balance'))

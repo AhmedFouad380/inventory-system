@@ -84,7 +84,7 @@ class WorkOrderTransferResource extends Resource
                         Textarea::make('notes')->label(__('inventory.fields.notes'))
                             ->columnSpanFull()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                    ])->columns(2),
+                    ])->columns(2)->columnSpanFull(),
 
                 Section::make(__('inventory.items'))
                     ->schema([

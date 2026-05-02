@@ -68,6 +68,8 @@ class WorkOrderResource extends Resource
                         TextInput::make('wo_number')
                             ->label(__('inventory.fields.wo_number'))
                             ->required(),
+                        TextInput::make('reservation_number')
+                            ->label(__('inventory.fields.reservation_number')),
                         Select::make('project_id')
                             ->label(__('inventory.project'))
                             ->searchable()
@@ -119,7 +121,7 @@ class WorkOrderResource extends Resource
                         
                         Textarea::make('notes')->label(__('inventory.fields.notes'))
                             ->columnSpanFull(),
-                    ])->columns(2),
+                    ])->columns(2)->columnSpanFull(),
 
                 Section::make(__('inventory.mrns'))
                     ->schema([
@@ -187,7 +189,7 @@ class WorkOrderResource extends Resource
                             ->collapsible()
                             ->collapsed()
                             ->itemLabel(fn (array $state): ?string => $state['mrn_number'] ?? null),
-                    ])
+                    ])->columnSpanFull()
             ]);
     }
 
@@ -203,6 +205,9 @@ class WorkOrderResource extends Resource
                     ->placeholder('-'),
                 TextEntry::make('supplier.name')
                     ->label(__('inventory.supplier'))
+                    ->placeholder('-'),
+                TextEntry::make('reservation_number')
+                    ->label(__('inventory.fields.reservation_number'))
                     ->placeholder('-'),
                 TextEntry::make('contract_ref')
                     ->placeholder('-'),
@@ -242,8 +247,11 @@ class WorkOrderResource extends Resource
                     ->searchable(),
                 TextColumn::make('supplier.name')->label(__('inventory.supplier'))
                     ->searchable(),
-                TextColumn::make('contract_ref')->label(__('inventory.fields.contract_ref'))
+                TextColumn::make('reservation_number')->label(__('inventory.fields.reservation_number'))
                     ->searchable(),
+                TextColumn::make('contract_ref')->label(__('inventory.fields.contract_ref'))
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('status')->label(__('inventory.fields.status'))
                     ->searchable(),
                 TextColumn::make('opened_at')->label(__('inventory.fields.opened_at'))

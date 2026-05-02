@@ -39,6 +39,8 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->brandName('Inventory System')
+            ->brandLogo(asset('logo.jpeg'))
+            ->brandLogoHeight('2.5rem')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,

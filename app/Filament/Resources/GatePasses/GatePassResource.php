@@ -104,7 +104,7 @@ class GatePassResource extends Resource
                         Textarea::make('notes')->label(__('inventory.fields.notes'))
                             ->columnSpanFull()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                    ])->columns(2),
+                    ])->columns(2)->columnSpanFull(),
 
                 Section::make(__('inventory.items'))
                     ->schema([
@@ -196,7 +196,7 @@ class GatePassResource extends Resource
                         TextEntry::make('notes')->label(__('inventory.fields.notes'))->columnSpanFull(),
                         TextEntry::make('createdBy.name')->label(__('inventory.fields.created_by')),
                         TextEntry::make('created_at')->dateTime(),
-                    ])->columns(2),
+                    ])->columns(2)->columnSpanFull(),
             ]);
     }
 

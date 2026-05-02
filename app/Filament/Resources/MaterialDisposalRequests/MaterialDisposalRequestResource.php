@@ -106,7 +106,7 @@ class MaterialDisposalRequestResource extends Resource
                         Textarea::make('notes')->label(__('inventory.fields.notes'))
                             ->columnSpanFull()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                    ])->columns(2),
+                    ])->columns(2)->columnSpanFull(),
 
                 Section::make(__('inventory.items'))
                     ->schema([
@@ -172,7 +172,7 @@ class MaterialDisposalRequestResource extends Resource
                         TextEntry::make('mdr_date')->label(__('inventory.fields.mdr_date'))->date(),
                         TextEntry::make('status')->label(__('inventory.fields.status')),
                         TextEntry::make('notes')->label(__('inventory.fields.notes'))->columnSpanFull(),
-                    ])->columns(2),
+                    ])->columns(2)->columnSpanFull(),
             ]);
     }
 
