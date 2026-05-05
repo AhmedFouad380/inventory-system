@@ -95,6 +95,7 @@ class SiteResource extends Resource
     {
         return $table
             ->recordTitleAttribute('name')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('name')->label(__('inventory.fields.name'))
                     ->searchable(),

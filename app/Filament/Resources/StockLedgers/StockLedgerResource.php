@@ -98,6 +98,7 @@ class StockLedgerResource extends Resource
     {
         return $table
             ->recordTitleAttribute('id')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('workOrder.wo_number')->label(__('inventory.work_order'))
                     ->searchable(),

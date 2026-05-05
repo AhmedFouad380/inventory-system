@@ -12,7 +12,7 @@ class ImportWorkOrders extends Command
 
     public function handle()
     {
-        $file = $this->argument('file') ?? public_path('2025 ALL SEC WORK ORDER.xlsx');
+        $file = $this->argument('file') ?? public_path('2026 ALL SEC WORK ORDER.xlsx');
         $dryRun = $this->option('dry-run');
 
         $this->info("Import starting (dry-run: " . ($dryRun ? 'yes' : 'no') . ")");

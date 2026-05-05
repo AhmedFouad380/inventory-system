@@ -199,6 +199,7 @@ class SupplierReturnResource extends Resource
     {
         return $table
             ->recordTitleAttribute('return_number')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('return_number')->label(__('inventory.fields.sr_number'))->searchable(),
                 TextColumn::make('workOrder.wo_number')->label(__('inventory.work_order'))->searchable(),

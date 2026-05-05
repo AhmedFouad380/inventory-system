@@ -185,6 +185,7 @@ class MaterialReceiptNoteResource extends Resource
     {
         return $table
             ->recordTitleAttribute('mrn_number')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('mrn_number')->label(__('inventory.fields.mrn_number'))
                     ->searchable(),

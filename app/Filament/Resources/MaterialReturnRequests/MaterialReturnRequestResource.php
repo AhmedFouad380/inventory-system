@@ -244,6 +244,7 @@ class MaterialReturnRequestResource extends Resource
     {
         return $table
             ->recordTitleAttribute('mrr_number')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('mrr_number')->label(__('inventory.fields.mrr_number'))->searchable(),
                 TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))->searchable(),

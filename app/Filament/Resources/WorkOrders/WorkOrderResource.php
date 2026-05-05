@@ -239,6 +239,7 @@ class WorkOrderResource extends Resource
     {
         return $table
             ->recordTitleAttribute('wo_number')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('wo_number')
                     ->searchable(),

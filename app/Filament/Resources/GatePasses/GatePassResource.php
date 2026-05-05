@@ -218,6 +218,7 @@ class GatePassResource extends Resource
     {
         return $table
             ->recordTitleAttribute('gp_number')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('gp_number')->label(__('inventory.fields.gp_number'))->searchable(),
                 TextColumn::make('warehouse.name')->label(__('inventory.warehouse'))->searchable(),

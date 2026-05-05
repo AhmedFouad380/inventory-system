@@ -104,6 +104,7 @@ class ItemResource extends Resource
     {
         return $table
             ->recordTitleAttribute('description')
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('name')->label(__('inventory.fields.name'))->searchable()->sortable(),
                 TextColumn::make('item_code')->label(__('inventory.fields.item_code'))
