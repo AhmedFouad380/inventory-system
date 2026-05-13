@@ -37,9 +37,9 @@ class ItemsRelationManager extends RelationManager
                 TextInput::make('qty_issued')->label(__('inventory.fields.qty'))
                     ->required()
                     ->numeric(),
-                TextInput::make('reel_number')
+                TextInput::make('drum_number')
                     ->default(null),
-                Textarea::make('notes')
+                Textarea::make('place')
                     ->default(null)
                     ->columnSpanFull(),
             ]);
@@ -55,7 +55,9 @@ class ItemsRelationManager extends RelationManager
                 TextColumn::make('qty_issued')->label(__('inventory.fields.qty'))
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('reel_number')
+                TextColumn::make('drum_number')
+                    ->searchable(),
+                TextColumn::make('place')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

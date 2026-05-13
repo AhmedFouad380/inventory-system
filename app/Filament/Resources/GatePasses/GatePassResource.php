@@ -81,13 +81,21 @@ class GatePassResource extends Resource
                             ->required()
                             ->default(now())
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('vehicle_number')->label(__('inventory.fields.vehicle_number'))
+                        Select::make('vehicle_number_id')->label(__('inventory.fields.vehicle_number'))
+                            ->options(fn () => \App\Models\VehicleNumber::pluck('value','id'))
+                            ->searchable()->preload()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('recipient_name')->label(__('inventory.fields.recipient_name'))
+                        Select::make('recipient_id')->label(__('inventory.fields.recipient_name'))
+                            ->options(fn () => \App\Models\Recipient::pluck('name','id'))
+                            ->searchable()->preload()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('driver_name')->label(__('inventory.fields.driver_name'))
+                        Select::make('driver_id')->label(__('inventory.fields.driver_name'))
+                            ->options(fn () => \App\Models\Driver::pluck('name','id'))
+                            ->searchable()->preload()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
-                        TextInput::make('destination')->label(__('inventory.fields.destination'))
+                        Select::make('destination_id')->label(__('inventory.fields.destination'))
+                            ->options(fn () => \App\Models\Destination::pluck('value','id'))
+                            ->searchable()->preload()
                             ->disabled(fn ($record) => $record?->status === 'approved'),
                         Select::make('status')->label(__('inventory.fields.status'))
                             ->options([
@@ -229,6 +237,8 @@ class GatePassResource extends Resource
             ])
             ->filters([
                 TrashedFilter::make(),
+                \App\Filament\Tables\Filters\DateRangeFilter::make('created_at'),
+                \App\Filament\Tables\Filters\DateRangeFilter::make('issued_at', 'تاريخ الإصدار'),
             ])
             ->recordActions([
                 ViewAction::make(),

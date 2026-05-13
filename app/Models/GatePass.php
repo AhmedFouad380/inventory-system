@@ -21,9 +21,10 @@ class GatePass extends Model {
     const STATUS_APPROVED  = 'approved';
 
     protected $fillable = [
-        'gp_number', 'work_order_id', 'issued_at', 'vehicle_number',
-        'recipient_name', 'driver_name', 'destination', 'status',
+        'gp_number', 'work_order_id', 'issued_at',
+        'status',
         'prepared_by', 'warehouse_keeper_id', 'engineer_id', 'notes',
+        'vehicle_number_id', 'recipient_id', 'driver_id', 'destination_id',
     ];
 
     protected $casts = ['issued_at' => 'datetime'];
@@ -56,5 +57,24 @@ class GatePass extends Model {
     {
         return $this->belongsTo(Warehouse::class);
     }
-    
+
+    public function vehicleNumberOption(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\VehicleNumber::class, 'vehicle_number_id');
+    }
+
+    public function recipientOption(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Recipient::class, 'recipient_id');
+    }
+
+    public function driverOption(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Driver::class, 'driver_id');
+    }
+
+    public function destinationOption(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Destination::class, 'destination_id');
+    }
 }

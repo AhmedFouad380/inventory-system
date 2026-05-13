@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'users' => 'Users',
     'project' => 'Project',
     'projects' => 'Projects',
     'site' => 'Site',
@@ -47,6 +48,8 @@ return [
     'fields' => [
         'name' => 'Name',
         'code' => 'Code',
+        'place' => 'Place',
+        'drum_number' => 'Drum Number',
         'description' => 'Description',
         'location' => 'Location',
         'type' => 'Type',
@@ -105,6 +108,8 @@ return [
         'from_date' => 'From Date',
         'to_date' => 'To Date',
         'available' => 'Available',
+        'engineer' => 'Engineer',
+        'warehouse_keeper' => 'Warehouse Keeper',
     ],
 
     'enums' => [

@@ -20,7 +20,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
-
+use Filament\Navigation\NavigationGroup;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -59,7 +59,19 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
+            ])->navigationGroups([
+    NavigationGroup::make()
+        ->label(__('inventory.work_orders'))
+        ->collapsible(),
+
+    NavigationGroup::make()
+        ->label(__('inventory.gate_passes'))
+        ->collapsible(),
+
+    NavigationGroup::make()
+        ->label(__('inventory.nav.operations'))
+        ->collapsible(),
+])
             ;
     }
 }

@@ -49,6 +49,8 @@ return [
     'fields' => [
         'name' => 'الاسم',
         'code' => 'الكود',
+        'drum_number' => 'رقم الدرام',
+        'place' => 'المكان',
         'description' => 'الوصف',
         'location' => 'الموقع',
         'type' => 'النوع',

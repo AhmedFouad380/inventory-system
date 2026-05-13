@@ -207,6 +207,8 @@ class MaterialReceiptNoteResource extends Resource
             ])
             ->filters([
                 TrashedFilter::make(),
+                \App\Filament\Tables\Filters\DateRangeFilter::make('created_at'),
+                \App\Filament\Tables\Filters\DateRangeFilter::make('mrn_date', 'تاريخ السند'),
             ])
             ->recordActions([
                 ViewAction::make(),
