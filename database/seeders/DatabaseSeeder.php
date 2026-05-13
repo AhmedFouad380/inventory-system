@@ -69,6 +69,7 @@ class DatabaseSeeder extends Seeder
         // }
 $this->call([
             InventoryNamesSeeder::class,
+            VehicleNumbersSeeder::class
         ]);
         // // 3. Create Projects
         // Project::factory(5)->create(['created_by' => $admin->id]);
