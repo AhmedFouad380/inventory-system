@@ -326,15 +326,17 @@ class GatePassResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                if ($year = request()->integer('year')) {
-                    $query->whereYear('issued_at', $year);
+                ->modifyQueryUsing(function (Builder $query, $livewire) {
+            $year = $livewire->year ?? request()->integer('year');
 
-                    return;
-                }
+            if ($year) {
+                $query->whereYear('issued_at', $year);
 
-                $query->whereDate('issued_at', today());
-            })
+                return;
+            }
+
+            $query->whereDate('issued_at', today());
+        })
             ->recordTitleAttribute('gp_number')
             ->defaultSort('created_at', 'desc')
             ->columns([

@@ -11,6 +11,18 @@ class ListWorkOrders extends ListRecords
     use \App\Traits\HasPdfExport;
 
     protected static string $resource = WorkOrderResource::class;
+  public ?int $year = null;
+
+    protected $queryString = [
+        'year' => ['except' => null],
+    ];
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        $this->year = request()->integer('year') ?: null;
+    }
 
     protected function getHeaderActions(): array
     {
