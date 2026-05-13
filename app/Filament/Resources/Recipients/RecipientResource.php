@@ -19,6 +19,7 @@ class RecipientResource extends Resource
     protected static ?string $model = Recipient::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {

@@ -39,15 +39,6 @@ class GatePass extends Model {
         return $this->belongsTo(User::class, 'prepared_by');
     }
 
-    public function warehouseKeeper(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'warehouse_keeper_id');
-    }
-
-    public function engineer(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'engineer_id');
-    }
 
     public function items(): HasMany
     {
@@ -76,5 +67,15 @@ class GatePass extends Model {
     public function destinationOption(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Destination::class, 'destination_id');
+    }
+    
+    public function warehouseKeeper(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseKeeper::class, 'warehouse_keeper_id');
+    }
+
+    public function engineer(): BelongsTo
+    {
+    return $this->belongsTo(SiteEngineer::class, 'engineer_id');
     }
 }

@@ -23,11 +23,12 @@ class DestinationResource extends Resource
     protected static ?string $model = Destination::class;
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTag;
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function getModelLabel(): string { return __('inventory.destination'); }
-    public static function getPluralModelLabel(): string { return __('inventory.destinations'); }
+    // public static function getModelLabel(): string { return __('inventory.destination'); }
+    // public static function getPluralModelLabel(): string { return __('inventory.destinations'); }
       protected function getHeaderActions(): array
     {
         return [

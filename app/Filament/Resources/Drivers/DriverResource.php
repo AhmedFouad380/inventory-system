@@ -20,6 +20,7 @@ class DriverResource extends Resource
     protected static ?string $model = Driver::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {
@@ -37,7 +38,9 @@ class DriverResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->sortable(),
-
+                TextColumn::make('emp_number')
+                    ->label('Emp Number')
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

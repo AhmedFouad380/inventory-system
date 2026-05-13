@@ -20,6 +20,7 @@ class VehicleNumberResource extends Resource
     protected static ?string $model = VehicleNumber::class;
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-truck';
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {
