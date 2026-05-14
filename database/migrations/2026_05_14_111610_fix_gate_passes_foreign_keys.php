@@ -78,9 +78,6 @@ return new class extends Migration
 
         // 4. Finally apply the new foreign keys
         Schema::table('gate_passes', function (Blueprint $table) {
-            $table->dropForeign(['warehouse_keeper_id']);
-            $table->dropForeign(['engineer_id']);
-
             $table->foreign('warehouse_keeper_id')->references('id')->on('warehouse_keepers')->nullOnDelete();
             $table->foreign('engineer_id')->references('id')->on('site_engineers')->nullOnDelete();
         });
