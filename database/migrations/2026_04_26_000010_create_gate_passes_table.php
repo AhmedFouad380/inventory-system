@@ -13,10 +13,10 @@ return new class extends Migration
             $table->string('gp_number')->unique();
             $table->foreignId('work_order_id')->constrained('work_orders');
             $table->dateTime('issued_at');
-            $table->string('vehicle_number')->nullable();
-            $table->string('recipient_name')->nullable();
-            $table->string('driver_name')->nullable();
-            $table->string('destination')->nullable();
+            $table->string('vehicle_number_id')->nullable();
+            $table->string('recipient_id')->nullable();
+            $table->string('driver_id')->nullable();
+            $table->string('destination_id')->nullable();
             $table->enum('status', ['draft', 'approved', 'issued', 'confirmed'])->default('draft');
             $table->foreignId('prepared_by')->constrained('users');
             $table->foreignId('warehouse_keeper_id')->nullable()->constrained('users')->nullOnDelete();
