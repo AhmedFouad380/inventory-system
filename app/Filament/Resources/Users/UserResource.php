@@ -18,6 +18,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 
 class UserResource extends Resource
 {
@@ -106,11 +107,45 @@ class UserResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->before(function (User $record, DeleteAction $action) {
+                        if ($record->hasLinkedRecords()) {
+                            Notification::make()
+                                ->danger()
+                                ->title(__('inventory.messages.cannot_delete_user'))
+                                ->body(__('inventory.messages.user_has_records'))
+                                ->send();
+
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $skippedCount = 0;
+                            foreach ($records as $record) {
+                                if ($record->hasLinkedRecords()) {
+                                    $skippedCount++;
+                                    continue;
+                                }
+                                $record->delete();
+                            }
+
+                            if ($skippedCount > 0) {
+                                Notification::make()
+                                    ->warning()
+                                    ->title(__('inventory.messages.some_users_not_deleted'))
+                                    ->body(__('inventory.messages.users_with_records_skipped', ['count' => $skippedCount]))
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->success()
+                                    ->title(__('inventory.messages.users_deleted'))
+                                    ->send();
+                            }
+                        }),
                 ]),
             ]);
     }

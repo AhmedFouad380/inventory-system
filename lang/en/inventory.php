@@ -159,5 +159,10 @@ return [
     ],
     'messages' => [
         'insufficient_stock' => 'Requested quantity is greater than available balance in source work order (:balance)',
+        'cannot_delete_user' => 'Cannot delete this user',
+        'user_has_records' => 'This user is linked to records in gate passes or other operations.',
+        'some_users_not_deleted' => 'Some users were not deleted',
+        'users_with_records_skipped' => 'Skipped :count user(s) because they have linked records.',
+        'users_deleted' => 'Users deleted successfully.',
     ],
 ];

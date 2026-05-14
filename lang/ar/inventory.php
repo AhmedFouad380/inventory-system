@@ -167,5 +167,10 @@ return [
     ],
     'messages' => [
         'insufficient_stock' => 'الكمية المطلوبة أكبر من الرصيد المتاح في أمر العمل المصدر (:balance)',
+        'cannot_delete_user' => 'لا يمكن حذف هذا المستخدم',
+        'user_has_records' => 'هذا المستخدم مرتبط بسجلات في تصاريح البوابة أو عمليات أخرى.',
+        'some_users_not_deleted' => 'بعض المستخدمين لم يتم حذفهم',
+        'users_with_records_skipped' => 'تم تخطي :count مستخدمين لأن لديهم سجلات مرتبطة.',
+        'users_deleted' => 'تم حذف المستخدمين بنجاح.',
     ],
 ];
