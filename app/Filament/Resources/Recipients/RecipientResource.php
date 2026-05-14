@@ -19,7 +19,10 @@ class RecipientResource extends Resource
     protected static ?string $model = Recipient::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
-    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string { return __('inventory.settings'); }
+
+    public static function getModelLabel(): string { return __('inventory.recipient'); }
+    public static function getPluralModelLabel(): string { return __('inventory.recipients'); }
 
     public static function form(Schema $schema): Schema
     {

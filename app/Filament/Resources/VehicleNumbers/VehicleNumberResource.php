@@ -20,7 +20,10 @@ class VehicleNumberResource extends Resource
     protected static ?string $model = VehicleNumber::class;
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-truck';
-    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string { return __('inventory.settings'); }
+
+    public static function getModelLabel(): string { return __('inventory.vehicle_number'); }
+    public static function getPluralModelLabel(): string { return __('inventory.vehicle_numbers'); }
 
     public static function form(Schema $schema): Schema
     {

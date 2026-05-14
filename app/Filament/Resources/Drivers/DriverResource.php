@@ -20,7 +20,10 @@ class DriverResource extends Resource
     protected static ?string $model = Driver::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user';
-    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string { return __('inventory.settings'); }
+
+    public static function getModelLabel(): string { return __('inventory.driver'); }
+    public static function getPluralModelLabel(): string { return __('inventory.drivers'); }
 
     public static function form(Schema $schema): Schema
     {

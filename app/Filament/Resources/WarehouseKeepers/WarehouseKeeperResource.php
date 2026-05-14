@@ -27,7 +27,10 @@ class WarehouseKeeperResource extends Resource
     protected static ?string $model = WarehouseKeeper::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string { return __('inventory.settings'); }
+
+    public static function getModelLabel(): string { return __('inventory.warehouse_keeper'); }
+    public static function getPluralModelLabel(): string { return __('inventory.warehouse_keepers'); }
 
     protected static ?string $recordTitleAttribute = 'WarehouseKeeper';
 

@@ -26,7 +26,10 @@ class SiteEngineersResource extends Resource
     protected static ?string $model = SiteEngineer::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string { return __('inventory.settings'); }
+
+    public static function getModelLabel(): string { return __('inventory.site_engineer'); }
+    public static function getPluralModelLabel(): string { return __('inventory.site_engineers'); }
 
     protected static ?string $recordTitleAttribute = 'SiteEngineer';
 

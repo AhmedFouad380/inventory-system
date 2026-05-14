@@ -28,7 +28,7 @@ class CategoryResource extends Resource
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'name';
-    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string { return __('inventory.settings'); }
 
     public static function getModelLabel(): string { return __('inventory.category'); }
     public static function getPluralModelLabel(): string { return __('inventory.categories'); }
