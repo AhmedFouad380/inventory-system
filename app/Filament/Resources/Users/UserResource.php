@@ -11,12 +11,14 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 
@@ -56,6 +58,10 @@ class UserResource extends Resource
                     ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
                     ->dehydrated(fn ($state) => filled($state))
                     ->revealable(),
+                Toggle::make('is_active')
+                    ->label(__('inventory.fields.is_active'))
+                    ->default(true)
+                    ->required(),
             ]);
     }
 
@@ -89,6 +95,10 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->label(__('inventory.fields.email'))
                     ->searchable(),
+                IconColumn::make('is_active')
+                    ->label(__('inventory.fields.is_active'))
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
