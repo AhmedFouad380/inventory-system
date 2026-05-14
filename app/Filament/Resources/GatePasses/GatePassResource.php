@@ -204,7 +204,7 @@ class GatePassResource extends Resource
                                 Select::make('item_id')
                                     ->label(__('inventory.item'))
                                     ->required()
-                                    ->columnSpan(2)
+                                    ->columnSpan(3)
                                     ->options(function (Get $get) {
                                         $workOrderId = $get('../../work_order_id');
                                         $warehouseId = $get('../../warehouse_id');
@@ -220,6 +220,18 @@ class GatePassResource extends Resource
                                             ->pluck('items.name', 'items.id');
                                     })
                                     ->live()
+                                    ->helperText(function (Get $get) {
+                                        $itemId = $get('item_id');
+                                        if (! $itemId) {
+                                            return null;
+                                        }
+                                        $item = \App\Models\Item::find($itemId);
+                                        if (! $item) {
+                                            return null;
+                                        }
+
+                                        return __('inventory.fields.item_code').': '.$item->item_code.' | '.__('inventory.fields.unit').': '.$item->unit;
+                                    })
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
 
                                 TextInput::make('qty_issued')
@@ -274,7 +286,7 @@ class GatePassResource extends Resource
 
                                 TextInput::make('place')
                                     ->label(__('inventory.fields.place'))
-                                    ->columnSpan(2)
+                                    ->columnSpan(1)
                                     ->disabled(fn ($record) => $record?->status === 'approved'),
                             ])
                             ->columns(6)
@@ -313,11 +325,13 @@ class GatePassResource extends Resource
                         RepeatableEntry::make('items')
                             ->schema([
                                 TextEntry::make('item.name')->label(__('inventory.item')),
+                                TextEntry::make('item.item_code')->label(__('inventory.fields.item_code')),
+                                TextEntry::make('item.unit')->label(__('inventory.fields.unit')),
                                 TextEntry::make('qty_issued')->label(__('inventory.fields.qty')),
                                 TextEntry::make('drum_number')->label(__('inventory.fields.drum_number')),
                                 TextEntry::make('place')->label(__('inventory.fields.place')),
                             ])
-                            ->columns(4)
+                            ->columns(6)
                             ->label(__('inventory.items')),
                     ]),
             ]);
