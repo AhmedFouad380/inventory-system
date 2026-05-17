@@ -65,11 +65,19 @@ class AdminPanelProvider extends PanelProvider
         ->collapsible(),
 
     NavigationGroup::make()
-        ->label(__('inventory.gate_passes'))
+        ->label(__('inventory.nav.basic_data'))
+        ->collapsible(),
+
+    NavigationGroup::make()
+        ->label(__('inventory.nav.inventory_reports'))
         ->collapsible(),
 
     NavigationGroup::make()
         ->label(__('inventory.nav.operations'))
+        ->collapsible(),
+
+    NavigationGroup::make()
+        ->label(__('inventory.settings'))
         ->collapsible(),
 ])
             ;

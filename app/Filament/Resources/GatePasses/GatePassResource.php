@@ -47,10 +47,7 @@ class GatePassResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTruck;
 
-    public static function getNavigationGroup(): ?string
-    {
-        return __('inventory.nav.operations');
-    }
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'gp_number';
 
