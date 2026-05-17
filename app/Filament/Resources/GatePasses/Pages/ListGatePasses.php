@@ -12,18 +12,6 @@ class ListGatePasses extends ListRecords
 
     protected static string $resource = GatePassResource::class;
 
-        public ?int $year = null;
-
-    protected $queryString = [
-        'year' => ['except' => null],
-    ];
-
-    public function mount(): void
-    {
-        parent::mount();
-
-        $this->year = request()->integer('year') ?: null;
-    }
 
     protected function getHeaderActions(): array
     {

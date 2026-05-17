@@ -29,7 +29,6 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
@@ -65,39 +64,6 @@ class GatePassResource extends Resource
         return __('inventory.gate_passes');
     }
 
-    public static function getNavigationItems(): array
-    {
-        return [
-            NavigationItem::make('Today')
-                ->icon('heroicon-o-calendar')
-                ->group(__('inventory.gate_passes'))
-                ->sort(1)
-                ->url(static::getUrl('index'))
-                ->isActiveWhen(
-                    fn (): bool =>
-                    request()->routeIs('filament.admin.resources.gate-passes.*')
-                    && ! request()->has('year')
-                ),
-
-            NavigationItem::make('2026')
-                ->icon('heroicon-o-calendar-days')
-                ->group(__('inventory.gate_passes'))
-                ->sort(2)
-                ->url(static::getUrl('index', ['year' => 2026]))
-                ->isActiveWhen(
-                    fn (): bool => request()->integer('year') === 2026
-                ),
-
-            NavigationItem::make('2025')
-                ->icon('heroicon-o-calendar-days')
-                ->group(__('inventory.gate_passes'))
-                ->sort(3)
-                ->url(static::getUrl('index', ['year' => 2025]))
-                ->isActiveWhen(
-                    fn (): bool => request()->integer('year') === 2025
-                ),
-        ];
-    }
 
     public static function form(Schema $schema): Schema
     {
@@ -340,16 +306,9 @@ class GatePassResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-                ->modifyQueryUsing(function (Builder $query, $livewire) {
-            $year = $livewire->year ?? request()->integer('year');
-
-            if ($year) {
-                $query->whereYear('issued_at', $year);
-
-                return;
-            }
-
-            $query->whereDate('issued_at', today());
+                ->modifyQueryUsing(function (Builder $query) {
+            // إخفاء أي تصريح بوابة تاريخه قبل 15/5/2026
+            $query->where('issued_at', '>=', '2026-05-15 00:00:00');
         })
             ->recordTitleAttribute('gp_number')
             ->defaultSort('created_at', 'desc')
